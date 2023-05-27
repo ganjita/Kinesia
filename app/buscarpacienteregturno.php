@@ -15,7 +15,7 @@ if ($conn->connect_error) {
 if (isset($_POST['busqueda'])) {
     $busqueda = $_POST['busqueda'];
     // Utilizar una consulta preparada para evitar la inyección SQL
-    $sql = "SELECT id, nombre, apellido, dni, direccion, mail FROM usuarios WHERE nombre = ? OR apellido = ? OR dni = ?";
+    $sql = "SELECT id, nombre, apellido, dni, direccion, telefono, obra_social, plan, nroafiliado FROM usuarios WHERE nombre = ? OR apellido = ? OR dni = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ssi", $busqueda, $busqueda, $busqueda);
     $stmt->execute();
@@ -37,12 +37,13 @@ if (isset($_POST['busqueda'])) {
         $_SESSION['resultados'] = $resultados;
 
         
-        
         // Redirigir a la página "nuevo_turno.php" con los resultados de la búsqueda
         header("Location: ../nuevo_turno.php");
         exit();
-    } else {
-      header("Location: ../nuevo_turno.php");
+    } else if(isset($_POST['regturno'])) {
+        $busqueda = $_POST['regturno'];
+
+         header("Location: ../nuevo_turno.php");
     }
 }
 

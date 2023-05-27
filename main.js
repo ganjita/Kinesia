@@ -50,30 +50,30 @@
   //*************************************************************
   //script para seleccionar un paciente de la busqueda y se autocomplete el formulario de turno
   
-  
   $(document).ready(function() {
     // Agrega el evento de clic a las filas de la tabla
-    $('td[data-id]').click(function() {
-      // Obtén el ID del paciente desde el atributo data
-      var pacienteId = $(this).data('id');
+    $('tr[data-id]').click(function() {
+      // Obtén los valores de los elementos td
+      var nombre = $(this).find('td.nombre').text();
+      var apellido = $(this).find('td.apellido').text();
+      var direccion = $(this).find('td.direccion').text();
+      var osocial = $(this).find('td.osocial').text();
+      var plan = $(this).find('td.plan').text();
+      var nroafiliado = $(this).find('td.nroafiliado').text();
+      var dni = $(this).find('td.dni').text();
+      var telefono = $(this).find('td.telefono').text();
       
-      // Realiza una solicitud AJAX para obtener los datos del paciente según el ID
-      $.ajax({
-        url: 'obtener_datos_paciente.php', // Ruta al archivo PHP que obtiene los datos del paciente
-        method: 'POST',
-        data: { id: pacienteId }, // Envía el ID del paciente al archivo PHP
-        success: function(response) {
-          // Rellena el formulario con los datos del paciente
-          var datosPaciente = JSON.parse(response); // Convierte la respuesta JSON a un objeto JavaScript
-          
-          $('#nombre').val(datosPaciente.nombre).add('#apellido').val(datosPaciente.apellido);
-          $('#direccion').val(datosPaciente.direccion);
-          $('#telefono').val(datosPaciente.telefono);
-          $('#email').val(datosPaciente.email);
-          
-          // Otros campos del formulario...
-        }
-      });
+
+      var nombreCompleto = nombre + ' ' + apellido;
+
+      // Rellena el formulario con los valores obtenidos
+      $('#nombre').val(nombreCompleto);
+      $('#telefono').val(dni);
+      $('#direccion').val(direccion);
+      $('#osocial').val(osocial);
+      $('#plan').val(plan);
+      $('#nroafiliado').val(nroafiliado);
+      $('#telefono').val(telefono);
     });
   });
   

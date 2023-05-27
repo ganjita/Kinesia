@@ -34,8 +34,18 @@ session_start();
 </div>
 
 <div class="mb-3">
-<label for="email" class="form-label">Email:</label>
-<input type="email" id="email" name="email"  class="form-control">
+<label for="osocial" class="form-label">Obra Social:</label>
+<input type="osocial" id="osocial" name="osocial"  class="form-control">
+</div>
+
+<div class="mb-3">
+<label for="plan" class="form-label">Plan:</label>
+<input type="plan" id="plan" name="plan"  class="form-control">
+</div>
+
+<div class="mb-3">
+<label for="nroafiliado" class="form-label">Nro Afiliado:</label>
+<input type="nroafiliado" id="nroafiliado" name="nroafiliado"  class="form-control">
 </div>
 
 <div class="mb-3">
@@ -48,6 +58,10 @@ session_start();
 <input type="date" id="fecha" name="fecha"  class="form-control">
 </div>
 
+<div class="mb-3">
+<label for="hora" class="form-label">Hora del Turno:</label>
+<input type="time" id="hora" name="hora"  class="form-control">
+</div>
 
 <!-- Crear un elemento div para el campo de formulario -->
 <div class="mb-3">
@@ -73,12 +87,6 @@ session_start();
   </div>
 </div>
 
-
-<div class="mb-3">
-<label for="hora" class="form-label">Hora del Turno:</label>
-<input type="time" id="hora" name="hora"  class="form-control">
-</div>
-
 <div class="mb-3">
 <label for="motivo" class="form-label">Motivo de la Consulta:</label>
 <textarea id="motivo" name="motivo" rows="4"  class="form-control"></textarea>
@@ -88,8 +96,9 @@ session_start();
     <label for="valor-consulta" class="form-label">Valor $:</label>
     <input type="number" id="valor-consulta" name="valor-consulta"  class="form-control">
     </div>
-
-<button type="submit2" class="btn btn-primary btn-submit">Solicitar Turno</button>
+    <div class="input-group">
+      <button type="submit2" id="regturno" name="regturno" class="btn btn-primary btn-submit">Solicitar Turno</button>
+    </div>
 
 
 </form>
@@ -108,7 +117,7 @@ session_start();
                 <th>Apellido</th>
                 <th>DNI</th>
                 <th>Dirección</th>
-                <th>Email</th>
+                <th>Obra Social</th>                
             </tr>
         </thead>
         <tbody>
@@ -124,14 +133,17 @@ session_start();
               $pacienteId = $resultado['id'];
 
               
-
               echo '<tr data-id="' . $pacienteId . '">';
                   echo "<td>" . $resultado["id"] . "</td>";
-                  echo "<td>" . $resultado['nombre'] . "</td>";
-                  echo "<td>" . $resultado['apellido'] . "</td>";
+                  echo "<td class='nombre'>" . $resultado['nombre'] . "</td>";
+                  echo "<td class='apellido'>" . $resultado['apellido'] . "</td>";
                   echo "<td>" . $resultado['dni'] . "</td>";
-                  echo "<td>" . $resultado['direccion'] . "</td>";
-                  echo "<td>" . $resultado['mail'] . "</td>";
+                  echo "<td class='direccion'>" . $resultado['direccion'] . "</td>";
+                  echo "<td class='osocial'>" . $resultado['obra_social'] . "</td>";
+                  echo "<td class='plan' hidden>" . $resultado['plan'] . "</td>";
+                  echo "<td class='nroafiliado' hidden>" . $resultado['nroafiliado'] . "</td>";
+                  echo "<td class='telefono' hidden>" . $resultado['telefono'] . "</td>";
+
               echo "</tr>";
 }
 
