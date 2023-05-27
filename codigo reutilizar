@@ -1,0 +1,11 @@
+ <?php foreach ($resultados as $resultado) { ?>
+                   <tr>
+                    <td><?php echo $resultado['id']; ?></td>*/
+                    <td><?php echo $resultado['nombre' . 'apellido']; ?></td>
+                    <td><?php echo $resultado['dni']; ?></td>*/
+                    <td><?php echo $resultado['direccion']; ?></td>
+                    <td><?php echo $resultado['mail']; ?></td>
+                </tr>
+                
+                
+            <?php } ?>

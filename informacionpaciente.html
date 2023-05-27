@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Informacion de: </title>
+ <link rel="stylesheet" href="estilos.css">
+ <!-- Agregar el CDN de bootstrap 5 -->
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>    />
+</head>
+<body>
+ <!--MENU Y BARRA DE NAVEGACION-->
+ <header>
+ <!-- Usar el componente navbar de bootstrap 5 -->
+ <nav class="navbar navbar-expand-lg navbar-light bg-light">
+ <div class="container-fluid">
+ <div class="logo">
+ <a class="navbar-brand" href="index.html">
+ <img class="imglogo" src="img/logo.png" alt="KINESIA">
+ </a>
+ <h1>KINESIA</h1>
+ </div>
+ <!-- Agregar el botón de toggler para dispositivos móviles -->
+ <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+ <span class="navbar-toggler-icon"></span>
+ </button>
+ <!-- Colapsar el menú en un contenedor -->
+ <div class="collapse navbar-collapse" id="navbarSupportedContent">
+ <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+ <li class="nav-item"><a class="nav-link" href="registrar_paciente.html">REGISTRAR PACIENTE</a></li>
+ <li class="nav-item"><a class="nav-link" href="buscar_paciente.html">BUSCAR PACIENTE</a></li>
+ <li class="nav-item"><a class="nav-link" href="nuevo_turno.html">REGISTRAR TURNO</a></li>
+ <li class="nav-item"><a class="nav-link" href="turnos_medico.html">TURNOS MEDICO</a></li>
+ <!-- Usar el componente dropdown de bootstrap 5 -->
+ <li class="nav-item dropdown">
+  <a
+    class="nav-link dropdown-toggle"
+    href="#"
+    id="navbarDropdown"
+    role="button"
+    data-bs-toggle="dropdown"
+    aria-expanded="false"
+    >MEDICO</a
+  >
+  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+    <li><a class="dropdown-item">Juan Perez</a></li>
+    <li><a class="dropdown-item">Esteban Quito</a></li>
+    <li><a class="dropdown-item">Sebastian Cero</a></li>
+    <li><a class="dropdown-item">Manuel Quintana</a></li>
+  </ul>
+</li>
+ </ul>
+ <!-- Alinear el botón de iniciar sesión a la derecha -->
+ <div class="d-flex ms-auto">
+ <a href="iniciar_sesion.html" class="btn btn-primary login-btn">Iniciar Sesión</a>
+ </div>
+ </div>
+ </div>
+ </nav>
+ </header>
+
+ <!--Secciones del index-->
+
+<section class="patient-info">
+ <h2 class="patient-name">Nombre completo del paciente</h2>
+ <!-- Usar el componente list-group de bootstrap 5 -->
+ <ul class="list-group">
+ <li class="list-group-item"><label>Dirección:</label>
+ <span class="patient-address">Dirección del paciente</span></li>
+ <li class="list-group-item"><label>DNI:</label>
+ <span class="patient-dni">Número de DNI del paciente</span></li>
+ <li class="list-group-item"><label>Email:</label>
+ <span class="patient-email">Correo electrónico del paciente</span></li>
+ <li class="list-group-item"><label>Obra Social:</label>
+ <span class="patient-insurance">Nombre de la obra social</span></li>
+ <li class="list-group-item"><label>Fecha de Nacimiento:</label>
+ <span class="patient-birthdate">Fecha de nacimiento del paciente</span></li> 
+ </ul>
+ </section>
+ <!-- Contenido de la segunda sección del body -->
+ <section class="medical-record">
+ <!-- Usar el componente card de bootstrap 5 -->
+ <div class="card">
+ <div class="card-header">
+ <h2 class="section-title">Ficha Médica</h2>
+ </div>
+ <div class="card-body">
+ <!-- Usar el componente list-group de bootstrap 5 -->
+ <ul class="list-group list-group-flush">
+ <li class="list-group-item"><label>Paciente:</label>
+ <span class="patient-name">Nombre del paciente</span></li>
+ <li class="list-group-item"><label>Fecha de Ingreso:</label>
+ <span class="admission-date">Fecha de ingreso</span></li>
+ <li class="list-group-item"><label>Síntomas:</label>
+ <span class="symptoms">Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia voluptatibus quisquam hic. Ipsa quia sequi, delectus doloribus animi ad eveniet reprehenderit impedit neque rem dolore eius repudiandae ducimus deleniti. Nihil.</span></li>
+ <li class="list-group-item"><label>Diagnóstico:</label>
+ <span class="diagnosis">Diagnóstico del paciente Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis amet, saepe quibusdam facere magni nam a veritatis libero maiores dolor itaque possimus eius iusto repudiandae magnam excepturi cumque eligendi ipsum ipsa vitae commodi. Autem reprehenderit possimus nemo consequuntur dolores magni, beatae tenetur nam cumque asperiores! Doloribus possimus a tempore dignissimos provident consectetur qui corporis nam porro odit labore velit eaque sunt, excepturi delectus nemo eveniet quisquam minima itaque in! Delectus, esse, sapiente aspernatur odit est nisi expedita provident iusto nulla suscipit saepe excepturi, ipsa velit quidem! Id exercitationem quibusdam consequuntur. Accusamus enim ut perspiciatis suscipit quae illo eveniet officia eum, rerum vel voluptatibus, minus tenetur illum mollitia aspernatur ab? Et, magnam ex aperiam iusto sit necessitatibus tempora doloremque quod adipisci doloribus suscipit voluptatem minus consectetur excepturi sequi! Veniam iste similique maiores quaerat porro mollitia accusamus vel reiciendis qui doloribus accusantium est atque, praesentium adipisci sed, alias consequuntur corrupti provident, dolore unde? Libero, commodi reprehenderit deleniti unde repudiandae ratione vel repellat autem corporis voluptatibus accusantium adipisci sed, pariatur neque quo dolorem, eius officiis voluptatum? Repellendus praesentium est, eum omnis similique voluptatem rem, architecto quidem reiciendis accusantium, esse qui alias doloremque eaque. Incidunt quibusdam enim quam deserunt sequi sunt sit. Voluptate, pariatur.</span></li>
+ <li class="list-group-item"><label>Tratamiento:</label>
+ <span class="treatment">Tratamiento del paciente Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste, dicta praesentium veniam placeat quis dolorum cum, perspiciatis doloremque eos impedit consequatur. Eligendi qui enim neque harum vel, doloribus officiis sed, dolorem blanditiis minima aut illum quisquam iste veritatis voluptatum possimus suscipit cum veniam sit earum quibusdam, maxime cumque incidunt perspiciatis? Blanditiis cupiditate ipsam ad voluptas, quaerat quas aspernatur recusandae nam inventore, quod debitis sapiente! Accusamus excepturi laboriosam saepe in necessitatibus iusto sed. Unde accusantium, nam omnis, consectetur labore mollitia quis nisi nesciunt possimus illo a. Quidem sapiente illum nam asperiores!</span></li>
+ <li class="list-group-item"><label>Notas del Médico:</label>
+ <span class="doctor-notes">Notas del médico Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet dolorem excepturi dolor rem quia porro magni consequuntur eaque voluptatum officiis, exercitationem atque tenetur omnis laborum impedit animi temporibus reiciendis optio. Maiores quam non consectetur quo dolorum? Ex odio blanditiis officia quae tenetur architecto rerum praesentium consectetur in. Provident autem odit similique at laborum repudiandae praesentium atque ex est voluptate totam maiores ducimus id, aspernatur, incidunt accusantium ratione ullam, ea cum eaque. Incidunt mollitia qui ea architecto consequatur officiis ratione recusandae aspernatur exercitationem nisi doloremque atque voluptatum, cupiditate, beatae perspiciatis repellendus cum accusantium, dolorem dolorum! Aliquam doloremque officiis tempore veniam fuga beatae et voluptas quibusdam assumenda consequatur. Dolorum sed, explicabo iste animi magni aut voluptates consequuntur, at ut eum, dicta facilis?</span></li>
+ <li class="list-group-item"><label>Fecha de Alta:</label>
+ <span class="discharge-date">Fecha de alta</span></li>
+ </ul>
+ </div>
+ </div> 
+ </section>
+
+ <!--SECCION DE TURNOS DEL PACIENTE-->
+
+<div class="container">
+  <h1>Turnos</h1>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Fecha</th>
+        <th scope="col">Hora</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Aquí puedes usar un bucle para generar las filas por cada turno -->
+      <tr>
+        <td>22/05/2023</td>
+        <td>10:00</td>
+      </tr>
+      <tr>
+        <td>22/05/2023</td>
+        <td>11:00</td>
+      </tr>
+      <tr>
+        <td>22/05/2023</td>
+        <td>12:00</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="container">
+  <h1>Saldo de cuentas</h1>
+  <!-- Formulario para filtrar o buscar -->
+  <form class="d-flex align-items-center mb-3">
+  <label for="cuenta" class="me-2">Cuenta:</label>
+  <select id="cuenta" name="cuenta" class="form-select me-3">
+  <option value="">Todas</option>
+  <option value="1">Caja de ahorro</option>
+  <option value="2">Cuenta corriente</option>
+  <option value="3">Tarjeta de crédito</option>
+  </select>
+  <label for="fecha" class="me-2">Fecha:</label>
+  <input type="date" id="fecha" name="fecha" class="form-control me-3" />
+  <button type="submit" class="btn btn-primary">Buscar</button>
+  </form>
+  <!-- Tabla con los saldos -->
+  <table class="table table-striped table-hover">
+  <thead>
+  <tr>
+  <th>Cuenta</th>
+  <th>Saldo</th>
+  </tr>
+  </thead>
+  <tbody>
+  <!-- Aquí se muestran los datos traídos de la base de datos -->
+  <tr>
+  <td>Caja de ahorro</td>
+  <td>10.000</td></tr><tr><td>Cuentacorriente</td><td> 5.000</td>
+  </tr>
+  <tr>
+  <td>Tarjeta de crédito</td>
+  <td>$ -3.000</td>
+  </tr>
+  </tbody>
+  </table>
+  </div>
+
+<script src="main.js"></script>
+</body>
+</html>
