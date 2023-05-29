@@ -25,27 +25,6 @@
 
   // *********************************************************************
   //**********************************************************************
-  //Script para mostrar la lista de médicos
-
-
-  // Usando jQuery para seleccionar el medico de NUEVO TURNO
-  // Asignar un evento click a las opciones de la lista desplegable
-  $(".medicoTurnoNuevo").on("click", function(){
-    // Obtener el texto de la opción seleccionada usando el método text()
-    var texto = $(this).text();
-    // Cambiar el texto del botón por el de la opción seleccionada usando el método text()
-    var nuevoTexto = $("#medico").text(texto);
-  });
-
-  // Usando jQuery para seleccionar el medico de TURNOS MEDICO
-  // Asignar un evento click a las opciones de la lista desplegable
-  $(".turnoMedico").on("click", function(){
-    // Obtener el texto de la opción seleccionada usando el método text()
-    var texto = $(this).text();
-    // Cambiar el texto del botón por el de la opción seleccionada usando el método text()
-    var nuevoTexto = $("#dropdownMenuButton1").text(texto);
-  });
-  
   //****************************************************************
   //*************************************************************
   //script para seleccionar un paciente de la busqueda y se autocomplete el formulario de turno
@@ -54,6 +33,7 @@
     // Agrega el evento de clic a las filas de la tabla
     $('tr[data-id]').click(function() {
       // Obtén los valores de los elementos td
+      var idPaciente = $(this).find('td.id_usuario').text();
       var nombre = $(this).find('td.nombre').text();
       var apellido = $(this).find('td.apellido').text();
       var direccion = $(this).find('td.direccion').text();
@@ -67,6 +47,7 @@
       var nombreCompleto = nombre + ' ' + apellido;
 
       // Rellena el formulario con los valores obtenidos
+      $('#id-paciente').val(idPaciente)
       $('#nombre').val(nombreCompleto);
       $('#telefono').val(dni);
       $('#direccion').val(direccion);
@@ -76,4 +57,54 @@
       $('#telefono').val(telefono);
     });
   });
+
+  //******************************************************* */
+  //******************************************************** */
+  //******************************************************** */
+  //SELECCIONAR EL MEDICO DEL DROPDOWN EN NUEVO TURNO Y ENVIAR EL TEXTO DEL DROPDOWN PARA LA BASE DE DATOS
+
+  $(document).ready(function() {
+    $('.dropdown-menu a').click(function() {
+      var medicoId = $(this).data('value'); // Obtén el valor de data-value
+      var medicoNombre = $(this).text(); // Obtén el texto del elemento seleccionado
+  
+      $('#medicoSeleccionado').val(medicoNombre); // Asigna el nombre al campo oculto
+      $('#medico').text(medicoNombre); // Actualiza el texto del botón dropdown
+    });
+  });
+
+  //******************************************************* */
+  //******************************************************** */
+  //******************************************************** */
+  //OBTENER EL VALOR DEL DROPDOWN EN TURNOS POR MEDICO Y PROCESAR EL FORMULARIO
+
+  var medicoButton = document.getElementById('medico');
+
+  medicoButton.addEventListener('click', function(event) {
+      event.preventDefault(); // Evitar la acción predeterminada del botón
+  
+      // Mostrar el menú desplegable al hacer clic en el botón
+      this.nextElementSibling.classList.toggle('show');
+  });
+  
+  // Agregar evento de clic a los elementos del menú desplegable
+  var medicoItems = document.querySelectorAll('.medicoTurnoNuevo');
+  
+  medicoItems.forEach(function(item) {
+      item.addEventListener('click', function() {
+          // Obtener el valor seleccionado del elemento del menú desplegable
+          var medicoSeleccionado = this.textContent;
+  
+          // Establecer el valor seleccionado en el campo oculto del formulario
+          var medicoSeleccionadoInput = document.getElementById('medicoSeleccionado');
+          medicoSeleccionadoInput.value = medicoSeleccionado;
+  
+          // Enviar el formulario
+          document.getElementById('formMedico').submit();
+      });
+  });
+  
+  
+  
+  
   

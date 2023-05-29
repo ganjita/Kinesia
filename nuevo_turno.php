@@ -1,5 +1,6 @@
 <?php 
   include 'plantillas/navmenu.inc.php';
+  include_once 'app/recuperarmedico.inc.php';
 
 session_start();
 
@@ -22,6 +23,10 @@ session_start();
   </div>
 </div>
 
+<div class="mb-3" hidden>
+<label for="id-paciente" class="form-label"></label>
+<input type="int" id="id-paciente" name="id-paciente"  class="form-control">
+</div>
 
 <div class="mb-3">
 <label for="nombre" class="form-label">Nombre Completo:</label>
@@ -62,34 +67,23 @@ session_start();
 <label for="hora" class="form-label">Hora del Turno:</label>
 <input type="time" id="hora" name="hora"  class="form-control">
 </div>
-
-<!-- Crear un elemento div para el campo de formulario -->
-<div class="mb-3">
-  <!-- Crear una etiqueta para el campo -->
-  <label for="medico" class="form-label">Seleccionar Médico:</label>
-  <!-- Crear un elemento div para el componente Dropdown -->
-  <div class="dropdown">
-    <!-- Crear un botón que activa la lista desplegable -->
+<br>
+<div class="dropdown">
     <button class="btn btn-secondary dropdown-toggle" type="button" id="medico" data-bs-toggle="dropdown" aria-expanded="false">Seleccionar Médico</button>
-    <!-- Crear una lista desordenada con las opciones de la lista desplegable -->
     <ul class="dropdown-menu" aria-labelledby="medico">
-      <!-- Crear un elemento de lista con un enlace para cada opción ACA VAMOS A TRAER LOS MEDICOS DESDE LA BASE DE DATOS-->
-      <li>
-        <a class="dropdown-item medicoTurnoNuevo" href="#" value="1">Dr. Juan Pérez</a>
+    <?php foreach ($medicos as $medico) { ?>
+       <li>
+        <a class="dropdown-item medicoTurnoNuevo" href="#" data-value="<?php echo $medico['id']; ?>"><?php echo $medico['nombre'] . ' ' . $medico['apellido']; ?></a>
       </li>
-      <li>
-        <a class="dropdown-item medicoTurnoNuevo" href="#" value="2">Dra. Ana López</a>
-      </li>
-      <li>
-        <a class="dropdown-item medicoTurnoNuevo" href="#" value="3">Dr. Luis Rodríguez</a>
-      </li>
+      <?php } ?>
     </ul>
   </div>
-</div>
-
+  <input type="hidden" class="medicoSeleccionado" id="medicoSeleccionado" name="medicoSeleccionado">
+  
+<br>
 <div class="mb-3">
 <label for="motivo" class="form-label">Motivo de la Consulta:</label>
-<textarea id="motivo" name="motivo" rows="4"  class="form-control"></textarea>
+<textarea type="text" id="motivo" name="motivo" rows="4"  class="form-control"></textarea>
 </div>
 
 <div class="mb-3">
@@ -134,6 +128,7 @@ session_start();
 
               
               echo '<tr data-id="' . $pacienteId . '">';
+                  echo "<td class='id_usuario' hidden>" . $pacienteId . "</td>";
                   echo "<td>" . $resultado["id"] . "</td>";
                   echo "<td class='nombre'>" . $resultado['nombre'] . "</td>";
                   echo "<td class='apellido'>" . $resultado['apellido'] . "</td>";

@@ -40,13 +40,48 @@ if (isset($_POST['busqueda'])) {
         // Redirigir a la página "nuevo_turno.php" con los resultados de la búsqueda
         header("Location: ../nuevo_turno.php");
         exit();
-    } else if(isset($_POST['regturno'])) {
+    } 
+    
+    else if(isset($_POST['regturno'])) {
         $busqueda = $_POST['regturno'];
 
-         header("Location: ../nuevo_turno.php");
+        $id_usuario = $_POST['id-paciente']; // ID del paciente seleccionado
+        $fecha_turno = $_POST['fecha'];
+        $hora_turno = $_POST['hora'];
+        $medico = $_POST['medicoSeleccionado'];
+        $motivo = $_POST['motivo'];
+        $valor = $_POST['valor-consulta'];
+
+        try {
+            $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+            // Preparar la consulta SQL para insertar los datos
+            $sql = "INSERT INTO turnos (id_usuario, fecha_turno, hora_turno, medico, motivo, valor) 
+                     VALUES (:id_usuario, :fecha_turno, :hora_turno, :medico, :motivo, :valor)";
+
+            $stmt = $conn->prepare($sql);
+        
+            // Asignar los valores a los parámetros de la consulta
+            $stmt->bindParam(':id_usuario', $id_usuario);
+            $stmt->bindParam(':fecha_turno', $fecha_turno);
+            $stmt->bindParam(':hora_turno', $hora_turno);
+            $stmt->bindParam(':medico', $medico);
+            $stmt->bindParam(':motivo', $motivo);
+            $stmt->bindParam(':valor', $valor);
+        
+            // Ejecutar la consulta
+            $stmt->execute();
+        
+            header('location: ../nuevo_turno.php');
+        
+        } catch(PDOException $e) {
+            echo "Error al insertar datos: " . $e->getMessage();
+        }
+
+
+
     }
 }
 
-// Cerrar la conexión
-$conn->close();
 ?>

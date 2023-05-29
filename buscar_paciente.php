@@ -5,7 +5,7 @@
 <!-- Usar el componente form de bootstrap 5 -->
 <div class="row justify-content-center">
     <div class="col-4" >
-<form action="app\buscar_pacienteapp.php" method="POST" class="search-form formulario"> <!--PROCESAR FORMULARIO-->
+<form action="app/buscar_pacienteapp.php" method="POST" class="search-form formulario">
 <h2 class="form-title text-center">Búsqueda de Paciente</h2>
 
 <div class="mb-3 text-center">
@@ -15,7 +15,7 @@
 
 <div class="mb-3 text-center">
 <label for="dni" class="form-label">DNI:</label>
-<input type="text" id="dni" name="dni" class="form-control">
+<input type="int" id="dni" name="dni" class="form-control">
 </div>
 
 <div class="mb-3 text-center">
