@@ -13,5 +13,3 @@ $medicos = $stmtMedicos->fetchAll(PDO::FETCH_ASSOC);
 
 // Cerrar la conexión
 $conn = null;
-
-?>

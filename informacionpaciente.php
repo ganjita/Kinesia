@@ -22,7 +22,7 @@ if (isset($_SESSION['resultados']) && !empty($_SESSION['resultados'])) {
     }
 }
 ?>
-    
+
 <section class="patient-info">
     <div class="row">
         <div class="col-6">
@@ -30,15 +30,20 @@ if (isset($_SESSION['resultados']) && !empty($_SESSION['resultados'])) {
             <!-- Usar el componente list-group de bootstrap 5 -->
             <ul class="list-group">
                 <li class="list-group-item"><label>Dirección:</label>
-                    <span class="patient-address"><?php echo $direccion; ?></span></li>
+                    <span class="patient-address"><?php echo $direccion; ?></span>
+                </li>
                 <li class="list-group-item"><label>DNI:</label>
-                    <span class="patient-dni"><?php echo $dni; ?></span></li>
+                    <span class="patient-dni"><?php echo $dni; ?></span>
+                </li>
                 <li class="list-group-item"><label>Email:</label>
-                    <span class="patient-email"><?php echo $mail; ?></span></li>
+                    <span class="patient-email"><?php echo $mail; ?></span>
+                </li>
                 <li class="list-group-item"><label>Obra Social:</label>
-                    <span class="patient-insurance"><?php echo $obra_social; ?></span></li>
+                    <span class="patient-insurance"><?php echo $obra_social; ?></span>
+                </li>
                 <li class="list-group-item"><label>Fecha de Nacimiento:</label>
-                    <span class="patient-birthdate"><?php echo $fecha_nacimiento; ?></span></li>
+                    <span class="patient-birthdate"><?php echo $fecha_nacimiento; ?></span>
+                </li>
             </ul>
         </div>
         <div class="col-6">
