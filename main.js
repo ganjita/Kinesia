@@ -1,37 +1,44 @@
-// Obtener el elemento input por su id
-var input = document.getElementById("fecha");
-// Obtener la fecha actual como un objeto Date
-var ahora = new Date();
-// Formatear la fecha actual como una cadena en el formato AAAA-MM-DD
-var valor =
-  ahora.getFullYear() +
-  "-" +
-  ("0" + (ahora.getMonth() + 1)).slice(-2) +
-  "-" +
-  ("0" + ahora.getDate()).slice(-2);
-// Asignar el valor al input
-input.value = valor;
+// Obtén la ruta de la página actual
+var rutaActual = window.location.pathname;
 
-// Función para cambiar el día del input según el parámetro delta
-function cambiarDia(delta) {
-  // Obtener la fecha del input como un objeto Date
-  var fecha = new Date(input.value);
-  // Sumar o restar un día al objeto Date según el parámetro delta
-  fecha.setDate(fecha.getDate() + delta + 1);
-  // Formatear la nueva fecha como una cadena en el formato AAAA-MM-DD
-  var nuevoValor =
-    fecha.getFullYear() +
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Obtener el elemento input por su id
+    var input = document.getElementById("fecha");
+    
+  // Obtener la fecha actual como un objeto Date
+  var ahora = new Date();
+  // Formatear la fecha actual como una cadena en el formato AAAA-MM-DD
+  var valor =
+    ahora.getFullYear() +
     "-" +
-    ("0" + (fecha.getMonth() + 1)).slice(-2) +
+    ("0" + (ahora.getMonth() + 1)).slice(-2) +
     "-" +
-    ("0" + fecha.getDate()).slice(-2);
-  // Asignar el nuevo valor al input
-  input.value = nuevoValor;
-}
+    ("0" + ahora.getDate()).slice(-2);
+  // Asignar el valor al input
+  input.value = valor;
+
+  // Función para cambiar el día del input según el parámetro delta
+  function cambiarDia(delta) {
+    // Obtener la fecha del input como un objeto Date
+    var fecha = new Date(input.value);
+    // Sumar o restar un día al objeto Date según el parámetro delta
+    fecha.setDate(fecha.getDate() + delta);
+    // Formatear la nueva fecha como una cadena en el formato AAAA-MM-DD
+    var nuevoValor =
+      fecha.getFullYear() +
+      "-" +
+      ("0" + (fecha.getMonth() + 1)).slice(-2) +
+      "-" +
+      ("0" + fecha.getDate()).slice(-2);
+    // Asignar el nuevo valor al input
+    input.value = nuevoValor;
+  }
+});
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //script para seleccionar un paciente de la busqueda y se autocomplete el formulario de turno////
 /////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 $(document).ready(function () {
   // Agrega el evento de clic a las filas de la tabla
@@ -81,6 +88,9 @@ $(document).ready(function () {
 //OBTENER EL VALOR DEL DROPDOWN EN TURNOS POR MEDICO Y PROCESAR EL FORMULARIO////
 /////////////////////////////////////////////////////////////////////////////////
 
+// Verifica si estás en la página que necesita el código
+if (rutaActual === "localhost/kinesia/buscar_paciente.php") {
+  // Coloca aquí el código que deseas cargar solo en esa página
 var medicoButton = document.getElementById("medico");
 
 medicoButton.addEventListener("click", function (event) {
@@ -89,9 +99,11 @@ medicoButton.addEventListener("click", function (event) {
   // Mostrar el menú desplegable al hacer clic en el botón
   this.nextElementSibling.classList.toggle("hidden");
 });
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//AL CAMBIAR LA FECHA DE TURNOS MEDICOS CON LOS BOTONES SIGUIENTE Y ANTERIOR MUESTRA SOLO LOS TURNOS/////
+//////MUESTRA LOS MEDICOS DE LA BASE DE DATOS EN UN BOTON QUE TIENE LA CLASE medicoTurnoNuevo////////////
+///////////////////////////////////////// De TURNOS_MEDICOS.PHP ////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $(document).ready(function () {
@@ -122,7 +134,6 @@ $(document).ready(function () {
 ////////////////////////////////////////////////////////////////////
 /////CLICK EN LA FILA DE LOS TURNOS Y SE ABRE LA VENTANA POPUP/////
 ///////////////////////////////////////////////////////////////////
-
 
 // Obtener el elemento que deseas bloquear
 var fila = document.getElementById("fila-bloqueada");
@@ -181,17 +192,20 @@ tabla.addEventListener("click", function (event) {
     // Insertar el contenido del detalle del turno en el modal
     document.getElementById("detalleTurnoModalBody").innerHTML = detalleHtml;
 
-    // Obtener el ID del turno 
+    // Obtener el ID del turno
     var idTurno = fila.getAttribute("data-idturno");
 
-    // Establecer el ID del turno en los campos ocultos de los popups para utilizarlo en la base de datos 
+    // Establecer el ID del turno en los campos ocultos de los popups para utilizarlo en la base de datos
     document.getElementById("turnoIdFecha").value = idTurno;
     document.getElementById("turnoIdHora").value = idTurno;
+    document.getElementById("turnoIdEliminar").value = idTurno;
+
 
     // Abrir el modal
     $("#detalleTurnoModal").modal("show");
   }
 });
+
 
 // Manejar el evento de clic en "Editar Fecha"
 document
@@ -214,13 +228,13 @@ document
     // Abrir el popup para editar la fecha
     $("#cambiarTurnoModal").modal("show");
   });
+
 ///////////////////////////////////////////////////////
 // Manejar el evento de clic en "Confirmar" (Fecha)////
 //////////////////////////////////////////////////////
 
 document
-  .getElementById("confirmarFechaBtn")
-  .addEventListener("click", function () {
+  .getElementById("confirmarFechaBtn") .addEventListener("click", function () {
     // Obtener el valor de la nueva fecha
     var nuevaFecha = document.getElementById("nuevaFecha").value;
 
@@ -294,7 +308,6 @@ $("#editarFechaModal").on("hidden.bs.modal", function () {});
 ///     CIERRE DE VENTANAS MODAL Y SOMBRAS DE FONDO SOLUCION NO PODER ABRIR 2 VECES UN MISMO BOTON    /////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 // Obtener los botones que abren las ventanas modales
 var openButtons = document.querySelectorAll("[data-bs-toggle='modal']");
 
@@ -343,8 +356,46 @@ closeButtons.forEach(function (button) {
   });
 });
 
+/////////////////////////////////////////////////////////////////////////
+////////POPUP PARA ELIMINAR TURNO Y VENTANA DE CONFIRMACION//////////////
+////////////////////////////////////////////////////////////////////////
 
+// Obtener el botón de eliminar turno
+var eliminarTurnoBtn = document.querySelector(".btn-danger");
 
-////////////////////////////////////////////////////////////////
-////////POPUP PARA INTERCAMBIAR UN TURNO POR OTRO//////////////
-///////////////////////////////////////////////////////////////
+// Obtener el botón de confirmar eliminación
+var confirmarEliminacionBtn = document.getElementById("confirmarEliminacionBtn");
+
+// Asignar un evento de clic al botón de eliminar turno
+eliminarTurnoBtn.addEventListener("click", function () {
+  // Mostrar el modal de confirmación
+  var confirmacionModal = new bootstrap.Modal(document.getElementById("confirmacionModal"));
+  confirmacionModal.show();
+});
+
+// Asignar un evento de clic al botón de confirmar eliminación
+confirmarEliminacionBtn.addEventListener("click", function () {
+  // Obtener el ID del turno
+  var idTurno = document.getElementById("turnoIdFecha").value;
+
+  // Realizar la lógica para eliminar el turno en la base de datos
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "app/eliminar_turno.php", true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      // La consulta se ejecutó correctamente
+      console.log(xhr.responseText);
+    } else {
+      // Error al ejecutar la consulta
+      console.log("Error al Eliminar el turno");
+    }
+  };
+
+  xhr.send("idTurno=" + idTurno);
+
+  // Cerrar el modal de confirmación
+  var confirmacionModal = bootstrap.Modal.getInstance(document.getElementById("confirmacionModal"));
+  confirmacionModal.hide();
+});
+

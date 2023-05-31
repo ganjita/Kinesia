@@ -12,7 +12,7 @@ session_start();
         </div>
         <div class="col-12 col-md-6 d-flex justify-content-between align-items-center flex-wrap">
             <!-- Campo input con el selector de fecha y hora y las clases de bootstrap -->
-            <input type="date" id="fecha" name="fecha" />
+            <input type="date" id="fecha" name="fecha" value=""/>
 
             <!-- Botones para el día siguiente y el día anterior con las clases de bootstrap -->
             <button type="button" id="anterior" name="anterior" class="btn btn-primary" onclick="cambiarDia(-1)">
@@ -85,7 +85,7 @@ session_start();
                             <button type="button" class="btn btn-primary" id="intercambiarTurnoBtn">Intercambiar Turno por otro</button>
                             <button type="button" class="btn btn-primary" id="editarFechaBtn">Editar Fecha</button>
                             <button type="button" class="btn btn-primary" id="editarHoraBtn">Editar Hora</button>
-                            <button type="button" class="btn btn-danger">Eliminar Turno</button>
+                            <button type="button" class="btn btn-danger" id="eliminarTurnoBtn">Eliminar Turno</button>
                         </div>
                     </div>
                 </div>
@@ -127,12 +127,12 @@ session_start();
                             <input type="hidden" id="turnoIdHora">
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary"  id="confirmarHoraBtn">Confirmar</button>
+                            <button type="button" class="btn btn-primary" id="confirmarHoraBtn">Confirmar</button>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
 
             <!-- Popup para Intercambiar turno -->
             <div class="modal fade" id="cambiarTurnoModal" tabindex="-1" role="dialog" aria-labelledby="cambiarTurnoModalLabel" aria-hidden="true">
@@ -140,7 +140,7 @@ session_start();
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="popupModalLabel">Intercambiar turno por otro que este en que fecha y hora? (Tiene que ser exacto):</h5>
-                            <button type="button" class="btn-close close"  aria-label="Close"></button>
+                            <button type="button" class="btn-close close" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <form id="popupForm">
@@ -158,6 +158,30 @@ session_start();
                     </div>
                 </div>
             </div>
+
+
+    
+            <!-- Ventana de confirmación -->
+            <div class="modal fade" id="confirmacionModal" tabindex="-1" role="dialog" aria-labelledby="confirmacionModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmacionModalLabel">Confirmar Eliminación</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            ¿Estás seguro de que deseas eliminar el turno?
+                        </div>
+                        <input type="hidden" id="turnoIdEliminar">
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-danger" id="confirmarEliminacionBtn">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             <?php
             include_once 'plantillas\cierrehtml.inc.php';
