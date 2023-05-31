@@ -1,23 +1,23 @@
-.logo {
-    display: flex;
-    grid-auto-columns: auto ;
-}
-
-.logo h1{
-    margin-top: 30px;
-    margin-left: 5px;
-}
-
-.imglogo {
-    width: 100px;
-    display: flex;
-}
-
-.navbar-collapse{
-    margin-left: 200px;
-}
-
-li {
-    list-style: none;
-}
-
+/*     .logo {                          */
+/*         display: flex;                 */ 
+/*         grid-auto-columns: auto ;       */
+/*     }                                    */
+/*                                              */  
+/*     .logo h1{                                */
+/*         margin-top: 30px;                    */
+/*         margin-left: 5px;                        */  
+/*     }                                        */
+/*                                              */
+/*     .imglogo {                               */
+/*         width: 100px;                            */
+/*         display: flex;                               */
+/*     }                                            */
+/*                                                  */
+/*     .navbar-collapse{                        */
+/*         margin-left: 200px;              */
+/*     }                                                */
+/*                                                          */
+/*     li {                                                             */
+/*         list-style: none;                                    */
+/*     }                                        */
+/*     

@@ -28,12 +28,10 @@ function cambiarDia(delta) {
   // Asignar el nuevo valor al input
   input.value = nuevoValor;
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//script para seleccionar un paciente de la busqueda y se autocomplete el formulario de turno////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
-// *********************************************************************
-//**********************************************************************
-//****************************************************************
-//*************************************************************
-//script para seleccionar un paciente de la busqueda y se autocomplete el formulario de turno
 
 $(document).ready(function () {
   // Agrega el evento de clic a las filas de la tabla
@@ -63,10 +61,9 @@ $(document).ready(function () {
   });
 });
 
-//******************************************************* */
-//******************************************************** */
-//******************************************************** */
-//SELECCIONAR EL MEDICO DEL DROPDOWN EN NUEVO TURNO Y ENVIAR EL TEXTO DEL DROPDOWN PARA LA BASE DE DATOS
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//SELECCIONAR EL MEDICO DEL DROPDOWN EN NUEVO TURNO Y ENVIAR EL TEXTO DEL DROPDOWN PARA LA BASE DE DATOS/////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $(document).ready(function () {
   $(".dropdown-menu button").click(function () {
@@ -80,10 +77,9 @@ $(document).ready(function () {
   });
 });
 
-//******************************************************* */
-//******************************************************** */
-//******************************************************** */
-//OBTENER EL VALOR DEL DROPDOWN EN TURNOS POR MEDICO Y PROCESAR EL FORMULARIO
+/////////////////////////////////////////////////////////////////////////////////
+//OBTENER EL VALOR DEL DROPDOWN EN TURNOS POR MEDICO Y PROCESAR EL FORMULARIO////
+/////////////////////////////////////////////////////////////////////////////////
 
 var medicoButton = document.getElementById("medico");
 
@@ -94,9 +90,9 @@ medicoButton.addEventListener("click", function (event) {
   this.nextElementSibling.classList.toggle("hidden");
 });
 
-////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////
-//AL CAMBIAR LA FECHA DE TURNOS MEDICOS CON LOS BOTONES SIGUIENTE Y ANTERIOR MUESTRA SOLO LOS TURNOS
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//AL CAMBIAR LA FECHA DE TURNOS MEDICOS CON LOS BOTONES SIGUIENTE Y ANTERIOR MUESTRA SOLO LOS TURNOS/////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $(document).ready(function () {
   $(".medicoTurnoNuevo").click(function (e) {
@@ -124,11 +120,13 @@ $(document).ready(function () {
 });
 
 ////////////////////////////////////////////////////////////////////
+/////CLICK EN LA FILA DE LOS TURNOS Y SE ABRE LA VENTANA POPUP/////
 ///////////////////////////////////////////////////////////////////
-//CLICK EN LA FILA DE LOS TURNOS Y SE ABRE LA VENTANA POPUP
+
 
 // Obtener el elemento que deseas bloquear
 var fila = document.getElementById("fila-bloqueada");
+
 // Manejar el evento de clic en la fila
 fila.addEventListener("click", function (event) {
   // Detener la propagación del evento
@@ -183,10 +181,10 @@ tabla.addEventListener("click", function (event) {
     // Insertar el contenido del detalle del turno en el modal
     document.getElementById("detalleTurnoModalBody").innerHTML = detalleHtml;
 
-    // Obtener el ID del turno
+    // Obtener el ID del turno 
     var idTurno = fila.getAttribute("data-idturno");
 
-    // Establecer el ID del turno en los campos ocultos de los popups
+    // Establecer el ID del turno en los campos ocultos de los popups para utilizarlo en la base de datos 
     document.getElementById("turnoIdFecha").value = idTurno;
     document.getElementById("turnoIdHora").value = idTurno;
 
@@ -216,8 +214,10 @@ document
     // Abrir el popup para editar la fecha
     $("#cambiarTurnoModal").modal("show");
   });
+///////////////////////////////////////////////////////
+// Manejar el evento de clic en "Confirmar" (Fecha)////
+//////////////////////////////////////////////////////
 
-// Manejar el evento de clic en "Confirmar" (Fecha)
 document
   .getElementById("confirmarFechaBtn")
   .addEventListener("click", function () {
@@ -250,8 +250,10 @@ document
     // Cerrar el popup
     $("#editarFechaModal").modal("hide");
   });
+////////////////////////////////////////////////////
+// Manejar el evento de clic en "Confirmar" (Hora)//
+////////////////////////////////////////////////////
 
-// Manejar el evento de clic en "Confirmar" (Hora)
 document
   .getElementById("confirmarHoraBtn")
   .addEventListener("click", function () {
@@ -285,23 +287,64 @@ document
     $("#editarHoraModal").modal("hide");
   });
 
-  // Manejar el evento de cierre del popup (hidden.bs.modal)
-$("#editarFechaModal").on("hidden.bs.modal", function () {
-  
+// Manejar el evento de cierre del popup (hidden.bs.modal)
+$("#editarFechaModal").on("hidden.bs.modal", function () {});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+///     CIERRE DE VENTANAS MODAL Y SOMBRAS DE FONDO SOLUCION NO PODER ABRIR 2 VECES UN MISMO BOTON    /////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// Obtener los botones que abren las ventanas modales
+var openButtons = document.querySelectorAll("[data-bs-toggle='modal']");
+
+// Asignar un evento de clic a cada botón que abre una ventana modal
+openButtons.forEach(function (button) {
+  button.addEventListener("click", function () {
+    // Obtener el ID de la ventana modal a abrir
+    var targetModalId = button.getAttribute("data-bs-target");
+    var targetModal = document.querySelector(targetModalId);
+
+    // Abrir la ventana modal
+    var modal = new bootstrap.Modal(targetModal);
+    modal.show();
+
+    // Agregar la clase "modal-open" al elemento <body>
+    document.body.classList.add("modal-open");
+  });
 });
 
-// Obtener el elemento del botón (la "X" en este caso)
-var modal = document.getElementById("detalleTurnoModal");
-var closeButton = document.getElementById("close");
+// Obtener todos los botones de cerrar
+var closeButtons = document.querySelectorAll(".btn-close");
 
-// Agregar el evento de clic al botón
-closeButton.addEventListener("click", function() {
-  // Aquí puedes agregar la lógica para cerrar una ventana emergente, eliminar un elemento, etc.
-  modal.style.display = "none";
-  
+// Asignar un evento de clic a cada botón de cerrar
+closeButtons.forEach(function (button) {
+  button.addEventListener("click", function () {
+    // Obtener el modal correspondiente al botón de cerrar
+    var modal = button.closest(".modal");
+
+    // Cerrar la ventana modal
+    var bsModal = bootstrap.Modal.getInstance(modal);
+    bsModal.hide();
+
+    // Si es la ventana principal, no eliminar la sombra
+    if (modal.getAttribute("id") !== "detalleTurnoModal") {
+      return;
+    }
+
+    // Eliminar la clase "modal-open" del elemento <body>
+    document.body.classList.remove("modal-open");
+
+    // Eliminar el estilo de fondo oscurecido aplicado por Bootstrap
+    var modalBackdrops = document.getElementsByClassName("modal-backdrop");
+    for (var i = 0; i < modalBackdrops.length; i++) {
+      modalBackdrops[i].parentNode.removeChild(modalBackdrops[i]);
+    }
+  });
 });
+
 
 
 ////////////////////////////////////////////////////////////////
+////////POPUP PARA INTERCAMBIAR UN TURNO POR OTRO//////////////
 ///////////////////////////////////////////////////////////////
-//        POPUP PARA INTERCAMBIAR UN TURNO POR OTRO
