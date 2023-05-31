@@ -250,11 +250,6 @@ document
     // Cerrar el popup
     $("#editarFechaModal").modal("hide");
   });
-// Manejar el evento de cierre del popup (hidden.bs.modal)
-$("#editarFechaModal").on("hidden.bs.modal", function () {
-  // Recargar la página
-  location.reload();
-});
 
 // Manejar el evento de clic en "Confirmar" (Hora)
 document
@@ -290,11 +285,22 @@ document
     $("#editarHoraModal").modal("hide");
   });
 
-// Manejar el evento de cierre del popup (hidden.bs.modal)
-$("#editarHoraModal").on("hidden.bs.modal", function () {
-  // Recargar la página
-  location.reload();
+  // Manejar el evento de cierre del popup (hidden.bs.modal)
+$("#editarFechaModal").on("hidden.bs.modal", function () {
+  
 });
+
+// Obtener el elemento del botón (la "X" en este caso)
+var modal = document.getElementById("detalleTurnoModal");
+var closeButton = document.getElementById("close");
+
+// Agregar el evento de clic al botón
+closeButton.addEventListener("click", function() {
+  // Aquí puedes agregar la lógica para cerrar una ventana emergente, eliminar un elemento, etc.
+  modal.style.display = "none";
+  
+});
+
 
 ////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////

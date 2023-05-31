@@ -72,9 +72,9 @@ session_start();
             <div class="modal fade" id="detalleTurnoModal" tabindex="-1" role="dialog" aria-labelledby="detalleTurnoModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <div class="modal-header">
+                        <div class="modal-header" id="cerrarmodal">
                             <h5 class="modal-title" id="detalleTurnoModalLabel">Detalles del Turno</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" id="close" data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -97,7 +97,7 @@ session_start();
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="editarFechaModalLabel">Editar Fecha</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -118,7 +118,7 @@ session_start();
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="editarHoraModalLabel">Editar Hora</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -140,7 +140,7 @@ session_start();
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="popupModalLabel">Seleccionar Fecha y Hora</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <form id="popupForm">
