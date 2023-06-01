@@ -1,4 +1,7 @@
 <?php
+/////////////////////////////////////////////////////////////
+/////archivo que se incluye para traer la base de datos//////
+/////de medicos y guardarla en $medicos//////////////////////
 include_once 'conexion.php';
 
 // Crear conexión PDO

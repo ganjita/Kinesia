@@ -63,6 +63,7 @@ if (isset($_SESSION['resultados']) && !empty($_SESSION['resultados'])) {
 <?php
 // Limpiar las variables de sesión después de mostrar los datos
 unset($_SESSION['resultados']);
+include_once 'plantillas/footer.inc.php';
 
 include_once 'plantillas/cierrehtml.inc.php';
 ?>

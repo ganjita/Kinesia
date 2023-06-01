@@ -1,40 +1,36 @@
 // Obtén la ruta de la página actual
-var rutaActual = window.location.pathname;
 
+// Obtener el elemento input por su id
+var input = document.getElementById("fecha");
 
-  document.addEventListener('DOMContentLoaded', function() {
-    // Obtener el elemento input por su id
-    var input = document.getElementById("fecha");
-    
-  // Obtener la fecha actual como un objeto Date
-  var ahora = new Date();
-  // Formatear la fecha actual como una cadena en el formato AAAA-MM-DD
-  var valor =
-    ahora.getFullYear() +
+// Obtener la fecha actual como un objeto Date
+var ahora = new Date();
+// Formatear la fecha actual como una cadena en el formato AAAA-MM-DD
+var valor =
+  ahora.getFullYear() +
+  "-" +
+  ("0" + (ahora.getMonth() + 1)).slice(-2) +
+  "-" +
+  ("0" + ahora.getDate()).slice(-2);
+// Asignar el valor al input
+input.value = valor;
+
+// Función para cambiar el día del input según el parámetro delta
+function cambiarDia(delta) {
+  // Obtener la fecha del input como un objeto Date
+  var fecha = new Date(input.value);
+  // Sumar o restar un día al objeto Date según el parámetro delta
+  fecha.setDate(fecha.getDate() + delta);
+  // Formatear la nueva fecha como una cadena en el formato AAAA-MM-DD
+  var nuevoValor =
+    fecha.getFullYear() +
     "-" +
-    ("0" + (ahora.getMonth() + 1)).slice(-2) +
+    ("0" + (fecha.getMonth() + 1)).slice(-2) +
     "-" +
-    ("0" + ahora.getDate()).slice(-2);
-  // Asignar el valor al input
-  input.value = valor;
-
-  // Función para cambiar el día del input según el parámetro delta
-  function cambiarDia(delta) {
-    // Obtener la fecha del input como un objeto Date
-    var fecha = new Date(input.value);
-    // Sumar o restar un día al objeto Date según el parámetro delta
-    fecha.setDate(fecha.getDate() + delta);
-    // Formatear la nueva fecha como una cadena en el formato AAAA-MM-DD
-    var nuevoValor =
-      fecha.getFullYear() +
-      "-" +
-      ("0" + (fecha.getMonth() + 1)).slice(-2) +
-      "-" +
-      ("0" + fecha.getDate()).slice(-2);
-    // Asignar el nuevo valor al input
-    input.value = nuevoValor;
-  }
-});
+    ("0" + fecha.getDate()).slice(-2);
+  // Asignar el nuevo valor al input
+  input.value = nuevoValor;
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //script para seleccionar un paciente de la busqueda y se autocomplete el formulario de turno////
@@ -88,9 +84,6 @@ $(document).ready(function () {
 //OBTENER EL VALOR DEL DROPDOWN EN TURNOS POR MEDICO Y PROCESAR EL FORMULARIO////
 /////////////////////////////////////////////////////////////////////////////////
 
-// Verifica si estás en la página que necesita el código
-if (rutaActual === "localhost/kinesia/buscar_paciente.php") {
-  // Coloca aquí el código que deseas cargar solo en esa página
 var medicoButton = document.getElementById("medico");
 
 medicoButton.addEventListener("click", function (event) {
@@ -99,7 +92,6 @@ medicoButton.addEventListener("click", function (event) {
   // Mostrar el menú desplegable al hacer clic en el botón
   this.nextElementSibling.classList.toggle("hidden");
 });
-}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////MUESTRA LOS MEDICOS DE LA BASE DE DATOS EN UN BOTON QUE TIENE LA CLASE medicoTurnoNuevo////////////
@@ -161,6 +153,7 @@ tabla.addEventListener("click", function (event) {
     var obraSocial = fila.cells[5].textContent;
     var plan = fila.cells[6].textContent;
     var nroAfiliado = fila.cells[7].textContent;
+    var valor = fila.cells[8].textContent;
 
     // Construir el contenido del detalle del turno
     var detalleHtml =
@@ -187,6 +180,9 @@ tabla.addEventListener("click", function (event) {
       "</p>" +
       "<p><strong>Nro.Afiliado:</strong> " +
       nroAfiliado +
+      "</p>" +
+      "<p><strong>Valor $</strong> " +
+      valor +
       "</p>";
 
     // Insertar el contenido del detalle del turno en el modal
@@ -200,12 +196,10 @@ tabla.addEventListener("click", function (event) {
     document.getElementById("turnoIdHora").value = idTurno;
     document.getElementById("turnoIdEliminar").value = idTurno;
 
-
     // Abrir el modal
     $("#detalleTurnoModal").modal("show");
   }
 });
-
 
 // Manejar el evento de clic en "Editar Fecha"
 document
@@ -234,7 +228,8 @@ document
 //////////////////////////////////////////////////////
 
 document
-  .getElementById("confirmarFechaBtn") .addEventListener("click", function () {
+  .getElementById("confirmarFechaBtn")
+  .addEventListener("click", function () {
     // Obtener el valor de la nueva fecha
     var nuevaFecha = document.getElementById("nuevaFecha").value;
 
@@ -364,12 +359,16 @@ closeButtons.forEach(function (button) {
 var eliminarTurnoBtn = document.querySelector(".btn-danger");
 
 // Obtener el botón de confirmar eliminación
-var confirmarEliminacionBtn = document.getElementById("confirmarEliminacionBtn");
+var confirmarEliminacionBtn = document.getElementById(
+  "confirmarEliminacionBtn"
+);
 
 // Asignar un evento de clic al botón de eliminar turno
 eliminarTurnoBtn.addEventListener("click", function () {
   // Mostrar el modal de confirmación
-  var confirmacionModal = new bootstrap.Modal(document.getElementById("confirmacionModal"));
+  var confirmacionModal = new bootstrap.Modal(
+    document.getElementById("confirmacionModal")
+  );
   confirmacionModal.show();
 });
 
@@ -391,11 +390,88 @@ confirmarEliminacionBtn.addEventListener("click", function () {
       console.log("Error al Eliminar el turno");
     }
   };
-
   xhr.send("idTurno=" + idTurno);
 
   // Cerrar el modal de confirmación
-  var confirmacionModal = bootstrap.Modal.getInstance(document.getElementById("confirmacionModal"));
+  var confirmacionModal = bootstrap.Modal.getInstance(
+    document.getElementById("confirmacionModal")
+  );
   confirmacionModal.hide();
 });
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+/////////CONSULTAR LA BASE DE DATOS SEGUN EL DIA SELECCIONADO EN EL INPUTFECHA/////////////////
+////////////////////////DE LA PAGINA TURNOS_MEDICO.PHP////////////////////////////////////////
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Función para realizar la consulta
+  function realizarConsulta(fecha) {
+    // Crear una instancia de XMLHttpRequest
+    var xhr = new XMLHttpRequest();
+
+    // Configurar la solicitud
+    xhr.open("POST", "app/obtenerturnosmedico1.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    // Definir la función de callback cuando la solicitud se complete
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        // Actualizar la interfaz con los resultados obtenidos
+        document.getElementById("resultadoTurnos").innerHTML = xhr.responseText;
+      } else {
+        // Manejar errores de la solicitud
+        console.error("Error en la solicitud. Estado: " + xhr.status);
+      }
+    };
+
+    // Crear los datos que se enviarán al servidor
+    var data = "&fecha=" + encodeURIComponent(fecha);
+
+    // Enviar la solicitud con los datos
+    xhr.send(data);
+  }
+
+  // Obtener el elemento de fecha
+  var fechaElement = document.getElementById("fecha");
+
+  // Asignar el evento change al elemento de fecha
+  fechaElement.addEventListener("change", function() {
+    var fecha = fechaElement.value;
+    realizarConsulta(fecha);
+  });
+
+  // Obtener los botones de día anterior y día siguiente
+  var botonAnterior = document.getElementById("anterior");
+  var botonSiguiente = document.getElementById("siguiente");
+
+  // Asignar el evento click a los botones
+  botonAnterior.addEventListener("click", function() {
+    var fechaAnterior = restarDia(fechaElement.value);
+    fechaElement.value = fechaAnterior;
+    realizarConsulta(fechaAnterior);
+  });
+
+  botonSiguiente.addEventListener("click", function() {
+    var fechaSiguiente = sumarDia(fechaElement.value);
+    fechaElement.value = fechaSiguiente;
+    realizarConsulta(fechaSiguiente);
+  });
+
+  // Función para restar un día a una fecha en formato YYYY-MM-DD
+  function restarDia(fecha) {
+    var fechaActual = new Date(fecha);
+    fechaActual.setDate(fechaActual.getDate() - 1);
+    return fechaActual.toISOString().split('T')[0];
+  }
+
+  // Función para sumar un día a una fecha en formato YYYY-MM-DD
+  function sumarDia(fecha) {
+    var fechaActual = new Date(fecha);
+    fechaActual.setDate(fechaActual.getDate() + 1);
+    return fechaActual.toISOString().split('T')[0];
+  }
+});
+
+
+
 

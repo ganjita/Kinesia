@@ -12,13 +12,13 @@ session_start();
         </div>
         <div class="col-12 col-md-6 d-flex justify-content-between align-items-center flex-wrap">
             <!-- Campo input con el selector de fecha y hora y las clases de bootstrap -->
-            <input type="date" id="fecha" name="fecha" value=""/>
+            <input type="date" id="fecha" name="fecha"/>
 
             <!-- Botones para el día siguiente y el día anterior con las clases de bootstrap -->
-            <button type="button" id="anterior" name="anterior" class="btn btn-primary" onclick="cambiarDia(-1)">
+            <button type="button" id="anterior" name="anterior" class="btn btn-primary selectorFecha" onclick="cambiarDia(1)">
                 Día anterior
             </button>
-            <button type="button" id="siguiente" name="siguiente" class="btn btn-primary" onclick="cambiarDia(1)">
+            <button type="button" id="siguiente" name="siguiente" class="btn btn-primary selectorFecha" onclick="cambiarDia(1)">
                 Día siguiente
             </button>
 
@@ -184,5 +184,7 @@ session_start();
 
 
             <?php
+            include_once 'plantillas/footer.inc.php';
+
             include_once 'plantillas\cierrehtml.inc.php';
             ?>

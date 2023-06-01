@@ -167,6 +167,7 @@ session_start();
 </div>
 
 <?php
+include_once 'plantillas/footer.inc.php';
 
 include 'plantillas/cierrehtml.inc.php';
 ?>
