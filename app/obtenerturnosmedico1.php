@@ -4,6 +4,10 @@ session_start();
 
 $html = '';
 
+///////////////////////////////////////////////////////////////
+//////CONSULTAS SOBRE TURNOS RELACIONADOS CON LOS USUARIOS////
+//////////////////////////////////////////////////////////////
+
 if (isset($_POST['medicoSeleccionado']) && !empty($_POST)) {
     try {
         // Crear conexión PDO
@@ -119,6 +123,7 @@ $fecha = $_POST['fecha'];
 
         // Obtener los resultados de la consulta
         $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
 
         if (isset($resultados) && !empty($resultados)) {
             foreach ($resultados as $resultado) {

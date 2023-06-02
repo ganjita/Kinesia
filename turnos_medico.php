@@ -12,7 +12,7 @@ session_start();
         </div>
         <div class="col-12 col-md-6 d-flex justify-content-between align-items-center flex-wrap">
             <!-- Campo input con el selector de fecha y hora y las clases de bootstrap -->
-            <input type="date" id="fecha" name="fecha"/>
+            <input type="date" id="fecha" name="fecha" />
 
             <!-- Botones para el día siguiente y el día anterior con las clases de bootstrap -->
             <button type="button" id="anterior" name="anterior" class="btn btn-primary selectorFecha" onclick="cambiarDia(1)">
@@ -75,11 +75,12 @@ session_start();
                         <div class="modal-header" id="cerrarmodal">
                             <h5 class="modal-title" id="detalleTurnoModalLabel">Detalles del Turno</h5>
                             <button type="button" class="btn-close close" id="close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
                             </button>
+                            <input type="int" id="idTurnoFila" name="idTurnoFila"  hidden>
                         </div>
                         <div class="modal-body" id="detalleTurnoModalBody">
                             <!-- Contenido del detalle del turno -->
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" id="intercambiarTurnoBtn">Intercambiar Turno por otro</button>
@@ -94,11 +95,10 @@ session_start();
             <!-- Popup para editar la fecha -->
             <div class="modal fade" id="editarFechaModal" tabindex="-1" role="dialog" aria-labelledby="editarFechaModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
-                    <div class="modal-content">
+                    <div class="modal-content bg-info">
                         <div class="modal-header">
                             <h5 class="modal-title" id="editarFechaModalLabel">Editar Fecha</h5>
                             <button type="button" class="btn-close close" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
@@ -119,7 +119,6 @@ session_start();
                         <div class="modal-header">
                             <h5 class="modal-title" id="editarHoraModalLabel">Editar Hora</h5>
                             <button type="button" class="btn-close close" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
@@ -149,18 +148,37 @@ session_start();
                                     <input type="date" class="form-control" id="fechaIntercambioTurno" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="hora" class="form-label">Hora:</label>
-                                    <input type="time" class="form-control" id="horaIntercambioTurno" required>
+                                    <br>
+                                    <label for="cambioTurno" class="form-label">El turno actual se cambiara por el siguiente:</label>
+                                    <input type="hidden" id="idTurnoSeleccionado" name="idTurnoSeleccionado">
+                                    <input type="hidden" id="idTurnoPadre" name="idTurnoPadre">
+                                    <input type="text" class="form-control" id="campoTurnoSeleccionado" placeholder="Turno por el que se hara el cambio" readonly>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Consultar</button>
+                                <button type="button" class="btn btn-primary" id="consultarTurnosDisponible">Consultar</button>
+                                <button type="button" class="btn btn-success" id="cambiarTurno">Cambiar Turno</button>
                             </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Popup para mostrar los resultados de la búsqueda -->
+            <div class="modal fade" id="resultadosModal" tabindex="-1" role="dialog" aria-labelledby="resultadosModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="resultadosModalLabel">Resultados de la búsqueda</h5>
+                            <button type="button" class="btn-close close" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="resultadosBusqueda">
+                            <!-- Aquí se mostrarán los resultados de la búsqueda -->
                         </div>
                     </div>
                 </div>
             </div>
 
 
-    
+
+
             <!-- Ventana de confirmación -->
             <div class="modal fade" id="confirmacionModal" tabindex="-1" role="dialog" aria-labelledby="confirmacionModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">

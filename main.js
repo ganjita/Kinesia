@@ -195,6 +195,7 @@ tabla.addEventListener("click", function (event) {
     document.getElementById("turnoIdFecha").value = idTurno;
     document.getElementById("turnoIdHora").value = idTurno;
     document.getElementById("turnoIdEliminar").value = idTurno;
+    document.getElementById("idTurnoPadre").value = idTurno;
 
     // Abrir el modal
     $("#detalleTurnoModal").modal("show");
@@ -403,7 +404,7 @@ confirmarEliminacionBtn.addEventListener("click", function () {
 /////////CONSULTAR LA BASE DE DATOS SEGUN EL DIA SELECCIONADO EN EL INPUTFECHA/////////////////
 ////////////////////////DE LA PAGINA TURNOS_MEDICO.PHP////////////////////////////////////////
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function () {
   // Función para realizar la consulta
   function realizarConsulta(fecha) {
     // Crear una instancia de XMLHttpRequest
@@ -414,7 +415,7 @@ document.addEventListener('DOMContentLoaded', function() {
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
     // Definir la función de callback cuando la solicitud se complete
-    xhr.onload = function() {
+    xhr.onload = function () {
       if (xhr.status === 200) {
         // Actualizar la interfaz con los resultados obtenidos
         document.getElementById("resultadoTurnos").innerHTML = xhr.responseText;
@@ -435,7 +436,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var fechaElement = document.getElementById("fecha");
 
   // Asignar el evento change al elemento de fecha
-  fechaElement.addEventListener("change", function() {
+  fechaElement.addEventListener("change", function () {
     var fecha = fechaElement.value;
     realizarConsulta(fecha);
   });
@@ -445,13 +446,13 @@ document.addEventListener('DOMContentLoaded', function() {
   var botonSiguiente = document.getElementById("siguiente");
 
   // Asignar el evento click a los botones
-  botonAnterior.addEventListener("click", function() {
+  botonAnterior.addEventListener("click", function () {
     var fechaAnterior = restarDia(fechaElement.value);
     fechaElement.value = fechaAnterior;
     realizarConsulta(fechaAnterior);
   });
 
-  botonSiguiente.addEventListener("click", function() {
+  botonSiguiente.addEventListener("click", function () {
     var fechaSiguiente = sumarDia(fechaElement.value);
     fechaElement.value = fechaSiguiente;
     realizarConsulta(fechaSiguiente);
@@ -461,17 +462,159 @@ document.addEventListener('DOMContentLoaded', function() {
   function restarDia(fecha) {
     var fechaActual = new Date(fecha);
     fechaActual.setDate(fechaActual.getDate() - 1);
-    return fechaActual.toISOString().split('T')[0];
+    return fechaActual.toISOString().split("T")[0];
   }
 
   // Función para sumar un día a una fecha en formato YYYY-MM-DD
   function sumarDia(fecha) {
     var fechaActual = new Date(fecha);
     fechaActual.setDate(fechaActual.getDate() + 1);
-    return fechaActual.toISOString().split('T')[0];
+    return fechaActual.toISOString().split("T")[0];
   }
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////MANEJAR LOS DATOS DE LA VENTANA MODAL "INTERCAMBIAR TURNO"/////////////////////////////
+///////////Y MOSTRARLOS EN UNA NUEVA VENTANA///////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////
+
+$(document).ready(function () {
+  $("#consultarTurnosDisponible").click(function () {
+    // Obtener los valores de fecha y hora del formulario
+    var fecha = $("#fechaIntercambioTurno").val();
+
+    // Realizar la consulta con los valores obtenidos
+    // Aquí puedes usar AJAX o cualquier otra forma de realizar la consulta a tu backend
+    // Realizar la lógica para eliminar el turno en la base de datos
+    // Realizar la solicitud Ajax
+    $(document).ready(function () {
+      $("#consultarTurnosDisponible").click(function () {
+        // Obtener los valores de fecha y hora del formulario
+        var fecha = $("#fechaIntercambioTurno").val();
+
+        // Realizar la consulta con los valores obtenidos
+        $.ajax({
+          url: "app/obtenerturnosmedico1.php",
+          type: "POST",
+          data: { fecha: fecha },
+          dataType: "html",
+          success: function (response) {
+            // Generar los resultados de la búsqueda y asignarlos a resultadosHtml
+            // Aquí puedes agregar lógica para construir el contenido de resultadosHtml con los datos recibidos en la respuesta
+            var resultadosHtml =
+              '<table class="table table-striped table-hover">' +
+              "<thead>" +
+              "<tr>" +
+              "<th>Medico</th>" +
+              "<th>Fecha</th>" +
+              "<th>Hora</th>" +
+              "<th>Nombre</th>" +
+              "<th>Teléfono</th>" +
+              "<th>Obra Social</th>" +
+              "<th>Plan</th>" +
+              "<th>Nro Afiliado</th>" +
+              "</tr>" +
+              "</thead>" +
+              "<tbody>" +
+              response + // Aquí se incluye el contenido de response sin formato
+              "</tbody>" +
+              "</table>";
+            // Agregar los resultados al elemento "resultadosBusqueda"
+            $("#resultadosBusqueda").html(resultadosHtml);
+
+            // Abrir el nuevo popup con los resultados de la búsqueda
+            $("#resultadosModal").modal("show");
+          },
+          error: function (xhr, status, error) {
+            console.log(xhr.responseText);
+          },
+        });
+      });
+    });
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    ///////////SELECCIONAR EL TURNO DE LA LISTA PARA INTERCAMBIAR Y PASAR DATOS/////////
+    ///////////////////////////////////////////////////////////////////////////////////
+    $(document).ready(function () {
+      // Capturar el clic en una fila de la tabla de resultados
+      $("#resultadosBusqueda").on("click", "tr", function () {
+        // Obtener los datos del turno seleccionado
+        var turnoId = $(this).data("idturno");
+        var nombre = $(this).find("td:eq(3)").text();
+        var fecha = $(this).find("td:eq(1)").text();
+        var hora = $(this).find("td:eq(2)").text();
+        var telefono = $(this).find("td:eq(4)").text();
+
+        //Asignar el valor de turnoId a input oculto
+        var turnoSeleccionado = document.getElementById("idTurnoSeleccionado");
+        turnoSeleccionado.value = turnoId;
+        
 
 
+        // Obtener el campo de entrada en la ventana modal anterior
+        var campoTurnoSeleccionado = $("#campoTurnoSeleccionado");
 
+        // Agregar los datos del turno al campo de entrada
+        campoTurnoSeleccionado.val(
+          nombre + " - " + hora + " - " + fecha + " - Tel:" + telefono
+        );
+
+        // Cerrar la ventana modal actual
+        $("#resultadosModal").modal("hide");
+      });
+
+      // Limpiar los datos cuando la ventana modal se oculta
+      $("#detalleTurnoModal").on("hidden.bs.modal", function () {
+        // Obtener el campo de entrada en la ventana modal anterior
+        var campoTurnoSeleccionado = $("#campoTurnoSeleccionado");
+        var fecha = $("#fechaIntercambioTurno");
+        var hora = $("#horaIntercambioTurno");
+
+        // Limpiar los datos del campo de entrada
+        campoTurnoSeleccionado.val("");
+        fecha.val("");
+        hora.val("");
+      });
+    });
+  });
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////PASARLO LOS VALORES DE LOS ID DE LOS TURNOS E INTERCAMBIAR////////////////
+/////////////////////////////LOS DATOS////////////////////////////////////////////////////
+
+$(document).ready(function () {
+  $("#cambiarTurno").click(function () {
+    // Obtener los valores de turnoSeleccionado y idTurnoPadre
+    var turnoSeleccionado = $("#idTurnoSeleccionado").val();
+    var idTurnoPadre = $("#idTurnoPadre").val();
+
+
+    // Crear el objeto de datos a enviar
+    var data = {
+      idTurnoSeleccionado: turnoSeleccionado,
+      idTurnoPadre: idTurnoPadre,
+    };
+   
+
+    // Realizar la solicitud AJAX
+    $.ajax({
+      url: "app/intercambiarturnoporotro.php",
+      type: "POST",
+      data: data,
+      success: function (response) {
+        // Manejar la respuesta del servidor
+        console.log(response);
+        Swal.fire('Cambio exitoso');
+
+        // Realizar las acciones necesarias en caso de éxito
+
+      },
+      error: function (xhr, status, error) {
+        // Manejar el error en caso de fallo en la solicitud
+        console.log("Error en la solicitud: " + error);
+        // Realizar las acciones necesarias en caso de error
+      },
+    });
+  });
+});

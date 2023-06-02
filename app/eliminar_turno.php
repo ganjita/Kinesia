@@ -1,6 +1,10 @@
 <?php
 include_once('conexion.php');
 
+///////////////////////////////////////////////
+/////ELIMINA UN TURNO DE LA TABLA turnos//////
+//////////////////////////////////////////////
+
 $idTurno = $_POST['idTurno']; // Suponiendo que obtienes el valor de idTurno desde un formulario o una solicitud POST
 
 try {

@@ -1,6 +1,10 @@
 <?php
 include_once 'conexion.php';
 
+/////////////////////////////////////////////////////////
+////GUARDA UN PACIENTE NUEVO EN LA TABLA DE USUARIOS////
+///////////////////////////////////////////////////////
+
 try {
     // Crear conexión PDO
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
