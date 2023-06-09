@@ -117,12 +117,13 @@ $(document).ready(function () {
 
     // Obtener el valor de data-value
     var medicoId = $(this).text();
+    var fecha = document.getElementById("fecha").value;
 
     // Realizar la solicitud Ajax
     $.ajax({
       url: "app/obtenerturnosmedico1.php", // URL del archivo PHP que realiza la consulta
       type: "POST",
-      data: { medicoSeleccionado: medicoId }, // Datos que se enviarán al servidor (en este caso, el ID del médico)
+      data: { medicoSeleccionado: medicoId, fecha: fecha }, // Datos que se enviarán al servidor (en este caso, el ID del médico y la fecha)
       dataType: "html", // Tipo de datos esperados en la respuesta (puede ser 'json' si el servidor devuelve JSON)
       success: function (response) {
         // Actualizar la interfaz con los resultados obtenidos
@@ -135,6 +136,7 @@ $(document).ready(function () {
     });
   });
 });
+
 
 ////////////////////////////////////////////////////////////////////
 /////CLICK EN LA FILA DE LOS TURNOS Y SE ABRE LA VENTANA POPUP/////
@@ -505,78 +507,90 @@ document.addEventListener("DOMContentLoaded", function () {
 /////////CONSULTAR LA BASE DE DATOS SEGUN EL DIA SELECCIONADO EN EL INPUTFECHA/////////////////
 ////////////////////////DE LA PAGINA TURNOS_MEDICO.PHP////////////////////////////////////////
 
-document.addEventListener("DOMContentLoaded", function () {
-  // Función para realizar la consulta
-  function realizarConsulta(fecha) {
-    // Crear una instancia de XMLHttpRequest
-    var xhr = new XMLHttpRequest();
+function realizarConsulta(fecha, medico) {
+  // Crear una instancia de XMLHttpRequest
+  var xhr = new XMLHttpRequest();
 
-    // Configurar la solicitud
-    xhr.open("POST", "app/obtenerturnosmedico1.php", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  // Configurar la solicitud
+  xhr.open("POST", "app/obtenerturnosmedico1.php", true);
+  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-    // Definir la función de callback cuando la solicitud se complete
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        // Actualizar la interfaz con los resultados obtenidos
-        document.getElementById("resultadoTurnos").innerHTML = xhr.responseText;
-      } else {
-        // Manejar errores de la solicitud
-        console.error("Error en la solicitud. Estado: " + xhr.status);
-      }
-    };
+  // Definir la función de callback cuando la solicitud se complete
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      // Actualizar la interfaz con los resultados obtenidos
+      document.getElementById("resultadoTurnos").innerHTML = xhr.responseText;
+    } else {
+      // Manejar errores de la solicitud
+      console.error("Error en la solicitud. Estado: " + xhr.status);
+    }
+  };
 
-    // Crear los datos que se enviarán al servidor
-    var data = "&fecha=" + encodeURIComponent(fecha);
+  // Crear los datos que se enviarán al servidor
+  var data = "fecha=" + encodeURIComponent(fecha) + "&medico=" + encodeURIComponent(medico);
 
-    // Enviar la solicitud con los datos
-    xhr.send(data);
-  }
+  // Enviar la solicitud con los datos
+  xhr.send(data);
+}
 
-  // Obtener el elemento de fecha
-  var fechaElement = document.getElementById("fecha");
+// Obtener el elemento de fecha y médico
+var fechaElement = document.getElementById("fecha");
+var medicoElement = document.getElementById("idMedicoSeleccionado");
 
-  if (fechaElement) {
-    // Asignar el evento change al elemento de fecha
-    fechaElement.addEventListener("change", function () {
-      var fecha = fechaElement.value;
-      realizarConsulta(fecha);
-    });
-  }
+if (fechaElement && medicoElement) {
+  // Obtener el valor inicial del médico seleccionado
+  var medicoSeleccionado = medicoElement.value;
 
-  // Obtener los botones de día anterior y día siguiente
-  var botonAnterior = document.getElementById("anterior");
-  var botonSiguiente = document.getElementById("siguiente");
+  // Asignar el evento change al elemento de fecha
+  fechaElement.addEventListener("change", function () {
+    var fecha = fechaElement.value;
+    var medico = medicoElement.value || medicoSeleccionado; // Usar el médico seleccionado si no hay un valor seleccionado en el momento del cambio de fecha
+    realizarConsulta(fecha, medico);
+  });
 
-  if (botonAnterior && botonSiguiente) {
-    // Asignar el evento click a los botones
-    botonAnterior.addEventListener("click", function () {
-      var fechaAnterior = restarDia(fechaElement.value);
-      fechaElement.value = fechaAnterior;
-      realizarConsulta(fechaAnterior);
-    });
+  // Asignar el evento change al elemento de médico
+  medicoElement.addEventListener("change", function () {
+    var fecha = fechaElement.value;
+    var medico = medicoElement.value;
+    realizarConsulta(fecha, medico);
+  });
+}
 
-    botonSiguiente.addEventListener("click", function () {
-      var fechaSiguiente = sumarDia(fechaElement.value);
-      fechaElement.value = fechaSiguiente;
-      realizarConsulta(fechaSiguiente);
-    });
-  }
+// Obtener los botones de día anterior y día siguiente
+var botonAnterior = document.getElementById("anterior");
+var botonSiguiente = document.getElementById("siguiente");
 
-  // Función para restar un día a una fecha en formato YYYY-MM-DD
-  function restarDia(fecha) {
-    var fechaActual = new Date(fecha);
-    fechaActual.setDate(fechaActual.getDate() - 1);
-    return fechaActual.toISOString().split("T")[0];
-  }
+if (botonAnterior && botonSiguiente) {
+  // Asignar el evento click a los botones
+  botonAnterior.addEventListener("click", function () {
+    var fechaAnterior = restarDia(fechaElement.value);
+    fechaElement.value = fechaAnterior;
+    var medico = medicoElement.value || medicoSeleccionado; // Usar el médico seleccionado si no hay un valor seleccionado en el momento del cambio de fecha
+    realizarConsulta(fechaAnterior, medico);
+  });
 
-  // Función para sumar un día a una fecha en formato YYYY-MM-DD
-  function sumarDia(fecha) {
-    var fechaActual = new Date(fecha);
-    fechaActual.setDate(fechaActual.getDate() + 1);
-    return fechaActual.toISOString().split("T")[0];
-  }
-});
+  botonSiguiente.addEventListener("click", function () {
+    var fechaSiguiente = sumarDia(fechaElement.value);
+    fechaElement.value = fechaSiguiente;
+    var medico = medicoElement.value || medicoSeleccionado; // Usar el médico seleccionado si no hay un valor seleccionado en el momento del cambio de fecha
+    realizarConsulta(fechaSiguiente, medico);
+  });
+}
+
+// Función para restar un día a una fecha en formato YYYY-MM-DD
+function restarDia(fecha) {
+  var fechaActual = new Date(fecha);
+  fechaActual.setDate(fechaActual.getDate() + 1);
+  return fechaActual.toISOString().split("T")[0];
+}
+
+// Función para sumar un día a una fecha en formato YYYY-MM-DD
+function sumarDia(fecha) {
+  var fechaActual = new Date(fecha);
+  fechaActual.setDate(fechaActual.getDate() + 1);
+  return fechaActual.toISOString().split("T")[0];
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////MANEJAR LOS DATOS DE LA VENTANA MODAL "INTERCAMBIAR TURNO"/////////////////////////////
@@ -589,11 +603,10 @@ $(document).ready(function () {
     var fecha = $("#fechaIntercambioTurno").val();
 
     // Realizar la consulta con los valores obtenidos
-    // Aquí puedes usar AJAX o cualquier otra forma de realizar la consulta a tu backend
 
     // Realizar la consulta con los valores obtenidos
     $.ajax({
-      url: "app/obtenerturnosmedico1.php",
+      url: "app/turnosintercambiofecha.php",
       type: "POST",
       data: { fecha: fecha },
       dataType: "html",

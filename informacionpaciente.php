@@ -82,12 +82,11 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                                 </tr>
                                 <tr>
                                     <th>Edad:</th>
-                                    <td id="edad"><?php 
-                                    $fechaActual = new DateTime();
-                                    $fecha_nacimiento = new DateTime($fecha_nacimiento);
-                                    $edad = $fecha_nacimiento->diff($fechaActual)->y;
-                                    echo $edad . " " . "Años";
-                                    ?></td>
+                                    <td id="edad"><?php
+                                                    $fechaActual = new DateTime();
+                                                    $fecha_nacimiento = new DateTime($fecha_nacimiento);
+                                                    $edad = $fecha_nacimiento->diff($fechaActual)->y;
+                                                    echo $edad . " " . "Años"; ?></td>
                                 </tr>
                                 <tr>
                                     <th>Obra Social:</th>
@@ -111,11 +110,60 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                                 </tr>
                             </tbody>
                         </table>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarPacienteModal">Editar Información Paciente</button>
+                        <div class="modal fade" id="editarPacienteModal" tabindex="-1" aria-labelledby="editarPacienteModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editarPacienteModalLabel">Editar Información del Paciente</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Contenido del formulario de edición -->
+                                        <form>
+                                            <!-- Campos del formulario -->
+                                            <div class="mb-3">
+                                                <label for="nombre" class="form-label">Direccion</label>
+                                                <input type="text" class="form-control" id="nombre" name="nombre">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="apellido" class="form-label">Localidad</label>
+                                                <input type="text" class="form-control" id="apellido" name="apellido">
+                                            </div>
+                                            <!-- Campos del formulario -->
+                                            <div class="mb-3">
+                                                <label for="nombre" class="form-label">Telefono</label>
+                                                <input type="text" class="form-control" id="nombre" name="nombre">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="apellido" class="form-label">Obra Social</label>
+                                                <input type="text" class="form-control" id="apellido" name="apellido">
+                                            </div>
+                                            <!-- Campos del formulario -->
+                                            <div class="mb-3">
+                                                <label for="nombre" class="form-label">Nro Afiliado</label>
+                                                <input type="text" class="form-control" id="nombre" name="nombre">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="apellido" class="form-label">Plan</label>
+                                                <input type="text" class="form-control" id="apellido" name="apellido">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="apellido" class="form-label">Email</label>
+                                                <input type="text" class="form-control" id="apellido" name="apellido">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary">Guardar cambios</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
@@ -213,6 +261,12 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
             </div>
         </div>
     </div>
+</div>
+
+</div>
+</div>
+
+<div class="container">
     <div class="row mt-4">
         <div class="col-md-6">
             <div class="card">
@@ -221,7 +275,7 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-6 col-md-4">
+                        <div class="col-md-4">
                             <img class="img-fluid" src="img/1.jpg" alt="">
                         </div>
                         <div class="col-6 col-md-4">
@@ -260,13 +314,6 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                                 }
                             }
                         }
-
-
-
-
-
-
-
                         ?>
                         <input type="text" class="form-control" id="saldo-deudor" readonly value="<?php echo $cuenta ?>">
                     </div>
@@ -305,12 +352,8 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
     </div>
 </div>
 
-
-
 <?php
 // Limpiar las variables de sesión después de mostrar los datos
-
-
 include_once 'plantillas/footer.inc.php';
 include_once 'plantillas/cierrehtml.inc.php';
 ?>

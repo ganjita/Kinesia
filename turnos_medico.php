@@ -6,41 +6,41 @@ session_start();
 ?>
 
 <div class="container" style="margin-top: 30px;">
-    <div class="row">
-        <div class="col-12 col-md-6">
-            <h1>Listado de turnos diarios</h1>
-        </div>
-        <div class="col-12 col-md-6 d-flex justify-content-between align-items-center flex-wrap">
-            <!-- Campo input con el selector de fecha y hora y las clases de bootstrap -->
-            <input type="date" id="fecha" name="fecha" />
-
-            <!-- Botones para el día siguiente y el día anterior con las clases de bootstrap -->
-            <button type="button" id="anterior" name="anterior" class="btn btn-primary selectorFecha" onclick="cambiarDia(1)">
-                Día anterior
-            </button>
-            <button type="button" id="siguiente" name="siguiente" class="btn btn-primary selectorFecha" onclick="cambiarDia(1)">
-                Día siguiente
-            </button>
-
-            <!--ACA EMPIEZA EL FORMULARIO-->
-            <form id="formMedico">
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="medico" data-bs-toggle="dropdown" aria-expanded="false">Seleccionar Médico</button>
-                    <ul class="dropdown-menu" aria-labelledby="medico">
-                        <?php foreach ($medicos as $medico) { ?>
-                            <li>
-                                <button class="dropdown-item medicoTurnoNuevo" href="#" data-value="<?php echo $medico['id']; ?>"><?php echo $medico['nombre'] . ' ' . $medico['apellido']; ?></button>
-                            </li>
-                        <?php } ?>
-                    </ul>
-                </div>
-                <input type="hidden" class="medicoSeleccionado" id="medicoSeleccionado" name="medicoSeleccionado">
-            </form>
-
-
-        </div>
+  <div class="row">
+    <div class="col-12 col-md-6">
+      <h1>Listado de turnos diarios</h1>
     </div>
+    <div class="col-12 col-md-6 d-flex justify-content-between align-items-center flex-wrap">
+      <!-- Campo input con el selector de fecha y hora y las clases de bootstrap -->
+      <input type="date" id="fecha" name="fecha" />
+
+      <!-- Botones para el día siguiente y el día anterior con las clases de bootstrap -->
+      <button type="button" id="anterior" name="anterior" class="btn btn-primary selectorFecha" onclick="cambiarDia(-1)">
+        Día anterior
+      </button>
+      <button type="button" id="siguiente" name="siguiente" class="btn btn-primary selectorFecha" onclick="cambiarDia(1)">
+        Día siguiente
+      </button>
+
+      <!-- Formulario de selección de médico -->
+      <form id="formMedico">
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="medico" data-bs-toggle="dropdown" aria-expanded="false">Seleccionar Médico</button>
+          <ul class="dropdown-menu" aria-labelledby="medico">
+            <?php foreach ($medicos as $medico) { ?>
+              <li>
+                <button class="dropdown-item medicoTurnoNuevo" href="#" data-value="<?php echo $medico['id']; ?>"><?php echo $medico['nombre'] . ' ' . $medico['apellido']; ?></button>
+              </li>
+            <?php } ?>
+          </ul>
+          <input type="hidden" class="medicoSeleccionado" id="medicoSeleccionado" name="medicoSeleccionado">
+          <input type="hidden" class="idMedicoSeleccionado" id="idMedicoSeleccionado" name="idMedicoSeleccionado">
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
+
 
 <div class="container" id="turnos-container">
     <div class="row">
@@ -63,7 +63,7 @@ session_start();
                         <!-- Filas generadas dinámicamente -->
                     </tbody>
                 </table>
-                
+
 
             </div>
 
@@ -82,7 +82,7 @@ session_start();
 
                         </div>
                         <div class="form-check form-check-inline d-flex align-items-center justify-content-center">
-                            <input class="form-check-input" type="checkbox" id="checkbox2" style="margin-left: 3px;";>
+                            <input class="form-check-input" type="checkbox" id="checkbox2" style="margin-left: 3px;" ;>
                             <label class=" form-check-label" for="checkbox2" style="margin-left: 3px;">ESTA PÁGO (tilda para marcar que esta pagado)</label>
                             <button type="button" class="btn btn-success" id="actEstadoBtn">Actualizar estado</button>
                         </div>
@@ -90,7 +90,7 @@ session_start();
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" id="intercambiarTurnoBtn">Intercambiar Turno por otro</button>
-                            
+
                             <button type="button" class="btn btn-primary" id="editarFechaBtn">Editar Fecha</button>
                             <button type="button" class="btn btn-primary" id="editarHoraBtn">Editar Hora</button>
                             <button type="button" class="btn btn-danger" id="eliminarTurnoBtn">Eliminar Turno</button>

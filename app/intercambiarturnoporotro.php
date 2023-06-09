@@ -9,15 +9,13 @@ $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $idTurnoPadre = isset($_POST['idTurnoPadre']) ? $_POST['idTurnoPadre'] : '';
 $idTurnoSeleccionado = isset($_POST['idTurnoSeleccionado']) ? $_POST['idTurnoSeleccionado'] : '';
 
-print_r($idTurnoPadre);
-print_r($idTurnoSeleccionado);
 
 if (!empty($idTurnoPadre) && !empty($idTurnoSeleccionado)) {
     // Consulta SQL para obtener los datos del turno actual
-    $sqlTurnoActual = "SELECT id_usuario, medico, motivo, valor, pagado FROM turnos WHERE id_turno = :idTurnoPadre";
+    $sqlTurnoActual = "SELECT id_usuario, id_medico, medico, motivo, valor, pagado FROM turnos WHERE id_turno = :idTurnoPadre";
 
     // Consulta SQL para obtener los datos del turno seleccionado
-    $sqlTurnoSeleccionado = "SELECT id_usuario, medico, valor, pagado FROM turnos WHERE id_turno = :idTurnoSeleccionado";
+    $sqlTurnoSeleccionado = "SELECT id_usuario, id_medico, medico, valor, pagado FROM turnos WHERE id_turno = :idTurnoSeleccionado";
 
     // Realizar la consulta para obtener los datos del turno actual
     $stmtTurnoActual = $conn->prepare($sqlTurnoActual);
@@ -34,7 +32,7 @@ if (!empty($idTurnoPadre) && !empty($idTurnoSeleccionado)) {
     // Verificar si se encontraron los dos turnos
     if ($turnoActual && $turnoSeleccionado) {
         // Realizar la actualización de los valores en la base de datos
-        $sqlUpdateTurnos = "UPDATE turnos SET id_usuario = :idUsuario, medico = :medico, motivo = :motivo, valor = :valor, pagado = :pagado WHERE id_turno = :idTurno";
+        $sqlUpdateTurnos = "UPDATE turnos SET id_usuario = :idUsuario, id_medico = :id_medico, medico = :medico, motivo = :motivo, valor = :valor, pagado = :pagado WHERE id_turno = :idTurno";
 
         // Iniciar una transacción para garantizar la integridad de los datos
         $conn->beginTransaction();
@@ -43,6 +41,7 @@ if (!empty($idTurnoPadre) && !empty($idTurnoSeleccionado)) {
             // Actualizar los datos del turno actual con los datos del turno seleccionado
             $stmtUpdateTurnoActual = $conn->prepare($sqlUpdateTurnos);
             $stmtUpdateTurnoActual->bindParam(':idUsuario', $turnoSeleccionado['id_usuario']);
+            $stmtUpdateTurnoActual->bindParam(':id_medico', $turnoSeleccionado['id_medico']);
             $stmtUpdateTurnoActual->bindParam(':medico', $turnoSeleccionado['medico']);
             $stmtUpdateTurnoActual->bindParam(':motivo', $turnoSeleccionado['motivo']);
             $stmtUpdateTurnoActual->bindParam(':valor', $turnoSeleccionado['valor']);
@@ -53,6 +52,7 @@ if (!empty($idTurnoPadre) && !empty($idTurnoSeleccionado)) {
             // Actualizar los datos del turno seleccionado con los datos del turno actual
             $stmtUpdateTurnoSeleccionado = $conn->prepare($sqlUpdateTurnos);
             $stmtUpdateTurnoSeleccionado->bindParam(':idUsuario', $turnoActual['id_usuario']);
+            $stmtUpdateTurnoSeleccionado->bindParam(':id_medico', $turnoActual['id_medico']);
             $stmtUpdateTurnoSeleccionado->bindParam(':medico', $turnoActual['medico']);
             $stmtUpdateTurnoSeleccionado->bindParam(':motivo', $turnoActual['motivo']);
             $stmtUpdateTurnoSeleccionado->bindParam(':valor', $turnoActual['valor']);
