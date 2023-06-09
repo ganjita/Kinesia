@@ -15,47 +15,49 @@ try {
 
     if (isset($nuevaHora)) {
 
-    // Preparar la consulta SQL
-    $sql = "UPDATE turnos SET hora_turno = :nuevaHora WHERE id_turno = :idTurno";
-    $stmt = $conn->prepare($sql);
-
-    // Asignar los valores a los parámetros de la consulta
-    $stmt->bindParam(':nuevaHora', $nuevaHora);
-    $stmt->bindParam(':idTurno', $idTurno);
-
-    // Ejecutar la consulta
-    $stmt->execute();
-
-    // Ejecutar la consulta
-    if ($stmt->execute()) {
-        // La consulta se ejecutó correctamente
-        echo "Hora actualizada con éxito";
-    } else {
-        // Error al ejecutar la consulta
-        echo "Error al actualizar la hora";
-    }
-    }elseif ($nuevaFecha != '') {
         // Preparar la consulta SQL
-    $sql = "UPDATE turnos SET fecha_turno = :nuevaFecha WHERE id_turno = :idTurno";
-    $stmt = $conn->prepare($sql);
+        $sql = "UPDATE turnos SET hora_turno = :nuevaHora WHERE id_turno = :idTurno";
+        $stmt = $conn->prepare($sql);
 
-    // Asignar los valores a los parámetros de la consulta
-    $stmt->bindParam(':nuevaFecha', $nuevaFecha);
-    $stmt->bindParam(':idTurno', $idTurno);
+        // Asignar los valores a los parámetros de la consulta
+        $stmt->bindParam(':nuevaHora', $nuevaHora);
+        $stmt->bindParam(':idTurno', $idTurno);
 
-    // Ejecutar la consulta
-    $stmt->execute();
+        // Ejecutar la consulta
+        $stmt->execute();
 
-    // Ejecutar la consulta
-    if ($stmt->execute()) {
-        // La consulta se ejecutó correctamente
-        echo "Fecha actualizada con éxito";
-    } else {
-        // Error al ejecutar la consulta
-        echo "Error al actualizar la Fecha";
-    }
-} 
-}catch (PDOException $e) {
+        // Ejecutar la consulta
+        if ($stmt->execute()) {
+            // La consulta se ejecutó correctamente
+            echo "Hora actualizada con éxito";
+        } else {
+            // Error al ejecutar la consulta
+            echo "Error al actualizar la hora";
+        }
+    } elseif ($nuevaFecha != '') {
+        // Preparar la consulta SQL
+        $sql = "UPDATE turnos SET fecha_turno = :nuevaFecha WHERE id_turno = :idTurno";
+        $stmt = $conn->prepare($sql);
+
+        // Asignar los valores a los parámetros de la consulta
+        $stmt->bindParam(':nuevaFecha', $nuevaFecha);
+        $stmt->bindParam(':idTurno', $idTurno);
+
+        // Ejecutar la consulta
+        $stmt->execute();
+
+        // Ejecutar la consulta
+        if ($stmt->execute()) {
+            // La consulta se ejecutó correctamente
+            echo "Fecha actualizada con éxito";
+        } else {
+            // Error al ejecutar la consulta
+            echo "Error al actualizar la Fecha";
+        }
+    } 
+    
+    } catch (PDOException $e) {
     // Manejo de errores de PDO
     echo "Error de conexión: " . $e->getMessage();
 }
+?>

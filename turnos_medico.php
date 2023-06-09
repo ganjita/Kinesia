@@ -5,7 +5,7 @@ include_once 'app/recuperarmedico.inc.php';
 session_start();
 ?>
 
-<div class="container">
+<div class="container" style="margin-top: 30px;">
     <div class="row">
         <div class="col-12 col-md-6">
             <h1>Listado de turnos diarios</h1>
@@ -27,9 +27,6 @@ session_start();
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="medico" data-bs-toggle="dropdown" aria-expanded="false">Seleccionar Médico</button>
                     <ul class="dropdown-menu" aria-labelledby="medico">
-                        <li>
-                            <button class="dropdown-item medicoTurnoNuevo" href="#" data-value="<?php echo 'Todos'; ?>"><?php echo 'Todos' ?></button>
-                        </li>
                         <?php foreach ($medicos as $medico) { ?>
                             <li>
                                 <button class="dropdown-item medicoTurnoNuevo" href="#" data-value="<?php echo $medico['id']; ?>"><?php echo $medico['nombre'] . ' ' . $medico['apellido']; ?></button>
@@ -66,6 +63,8 @@ session_start();
                         <!-- Filas generadas dinámicamente -->
                     </tbody>
                 </table>
+                
+
             </div>
 
             <!-- Ventana popup -->
@@ -76,14 +75,22 @@ session_start();
                             <h5 class="modal-title" id="detalleTurnoModalLabel">Detalles del Turno</h5>
                             <button type="button" class="btn-close close" id="close" data-bs-dismiss="modal" aria-label="Close">
                             </button>
-                            <input type="int" id="idTurnoFila" name="idTurnoFila"  hidden>
+                            <input type="int" id="idTurnoFila" name="idTurnoFila" hidden>
                         </div>
                         <div class="modal-body" id="detalleTurnoModalBody">
                             <!-- Contenido del detalle del turno -->
 
                         </div>
+                        <div class="form-check form-check-inline d-flex align-items-center justify-content-center">
+                            <input class="form-check-input" type="checkbox" id="checkbox2" style="margin-left: 3px;";>
+                            <label class=" form-check-label" for="checkbox2" style="margin-left: 3px;">ESTA PÁGO (tilda para marcar que esta pagado)</label>
+                            <button type="button" class="btn btn-success" id="actEstadoBtn">Actualizar estado</button>
+                        </div>
+
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" id="intercambiarTurnoBtn">Intercambiar Turno por otro</button>
+                            
                             <button type="button" class="btn btn-primary" id="editarFechaBtn">Editar Fecha</button>
                             <button type="button" class="btn btn-primary" id="editarHoraBtn">Editar Hora</button>
                             <button type="button" class="btn btn-danger" id="eliminarTurnoBtn">Eliminar Turno</button>

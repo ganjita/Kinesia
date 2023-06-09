@@ -22,3 +22,51 @@ li {
     list-style: none;                 
 }                                    
 
+.checkbox-label {
+    position: relative;
+    z-index: 9999;
+    margin-bottom: 10px;
+  }
+  
+  .checkbox-label input[type="checkbox"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    opacity: 0;
+  }
+
+  .card-header {
+    background-color: #262728;
+    font-weight: bold;
+  }
+
+  .form-group label {
+    font-weight: bold;
+  }
+  
+  .content-box {
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+  }
+
+  .rating input[type="radio"] {
+    display: none;
+  }
+  
+  .rating label {
+    display: inline-block;
+    color: #ccc;
+    cursor: pointer;
+  }
+  
+  .rating label i {
+    font-size: 24px;
+  }
+  
+  .rating input[type="radio"]:checked + label {
+    color: #ffcc00;
+  }
+  

@@ -2,7 +2,7 @@
 include_once 'plantillas/navmenu.inc.php';
 ?>
 <!-- Usar el componente form de bootstrap 5 -->
-<div class="row justify-content-center">
+<div class="row justify-content-center" style="margin-top: 30px;">
   <div class="col-8">
     <form action="app/guardar_paciente.php" method="POST" class="patient-form formulario">
 

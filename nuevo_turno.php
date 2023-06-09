@@ -9,7 +9,7 @@ session_start();
 
 
 <!-- Usar el componente form de bootstrap 5 -->
-<div class="container">
+<div class="container" style="margin-top: 30px;">
   <div class="row">
     <div class="container col-6">
       <form action="app\buscarpacienteregturno.php" method="POST" class="appointment-form container-fluid"> <!--PROCESAR FORMULARIO-->
@@ -77,8 +77,10 @@ session_start();
               </li>
             <?php } ?>
           </ul>
+          <input type="hidden" class="medicoSeleccionado" id="medicoSeleccionado" name="medicoSeleccionado">
+          <input type="hidden" class="idMedicoSeleccionado" id="idMedicoSeleccionado" name="idMedicoSeleccionado">
+
         </div>
-        <input type="hidden" class="medicoSeleccionado" id="medicoSeleccionado" name="medicoSeleccionado">
 
 
         <br>
@@ -90,6 +92,11 @@ session_start();
         <div class="mb-3">
           <label for="valor-consulta" class="form-label">Valor $:</label>
           <input type="number" id="valor-consulta" name="valor-consulta" class="form-control">
+          <div class="form-check form-check-inline d-flex align-items-left justify-content-left" style="margin-top: 5px;">
+            <input class="form-check-input" type="checkbox" id="checkpagoturno" name="checkpagoturno">
+            <label class="form-check-label" for="checkpagoturno" style="margin-left: 6px;">ESTA PÁGO (tilda para marcar que esta pagado)</label>
+          </div>
+
         </div>
         <div class="input-group">
           <button type="submit2" id="regturno" name="regturno" class="btn btn-primary btn-submit">Solicitar Turno</button>

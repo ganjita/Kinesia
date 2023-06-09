@@ -9,6 +9,7 @@ $html = '';
 //////////////////////////////////////////////////////////////
 
 if (isset($_POST['medicoSeleccionado']) && !empty($_POST)) {
+    
     try {
         // Crear conexión PDO
         $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
@@ -16,12 +17,15 @@ if (isset($_POST['medicoSeleccionado']) && !empty($_POST)) {
 
         // Obtener el ID del médico desde el formulario
         $medico = $_POST['medicoSeleccionado'];
+        
 
         if ($medico === 'Todos') {
+           
             // Construir la consulta SQL para obtener todos los turnos de todos los médicos y la información del usuario
             $consulta = "SELECT t.*, u.nombre, u.apellido, u.telefono, u.obra_social, u.nroafiliado, u.plan
                          FROM turnos t
-                         JOIN usuarios u ON t.id_usuario = u.id";
+                         JOIN usuarios u ON t.id_usuario = u.id
+                         ORDER BY t.fecha_turno DESC";
 
             // Preparar la consulta
             $stmt = $conn->prepare($consulta);
@@ -47,6 +51,7 @@ if (isset($_POST['medicoSeleccionado']) && !empty($_POST)) {
                     $html .= "<td>" . $resultado['plan'] . "</td>";
                     $html .= "<td>" . $resultado['nroafiliado'] . "</td>";
                     $html .= "<td hidden>" . $resultado['valor'] . "</td>";
+                    $html .= '<td data-pagado="" hidden>' . $resultado['pagado'] . '</td>';
                     $html .= "</tr>";
                 }
             }
@@ -55,7 +60,8 @@ if (isset($_POST['medicoSeleccionado']) && !empty($_POST)) {
             $consulta = "SELECT t.*, u.nombre, u.apellido, u.telefono, u.obra_social, u.nroafiliado, u.plan
                          FROM turnos t
                          JOIN usuarios u ON t.id_usuario = u.id
-                         WHERE t.medico = :idMedico";
+                         WHERE t.medico = :idMedico
+                         ORDER BY t.fecha_turno DESC";
 
             // Preparar la consulta
             $stmt = $conn->prepare($consulta);
@@ -84,6 +90,7 @@ if (isset($_POST['medicoSeleccionado']) && !empty($_POST)) {
                     $html .= "<td>" . $resultado['plan'] . "</td>";
                     $html .= "<td>" . $resultado['nroafiliado'] . "</td>";
                     $html .= "<td hidden>" . $resultado['valor'] . "</td>";
+                    $html .= '<td data-pagado="" hidden>' . $resultado['pagado'] . '</td>';
                     $html .= "</tr>";
                 }
             } else {
@@ -113,7 +120,8 @@ $fecha = $_POST['fecha'];
         $consulta = "SELECT t.*, u.nombre, u.apellido, u.telefono, u.obra_social, u.nroafiliado, u.plan
                      FROM turnos t
                      JOIN usuarios u ON t.id_usuario = u.id
-                     WHERE t.fecha_turno = :fecha";
+                     WHERE t.fecha_turno = :fecha
+                     ORDER BY t.fecha_turno DESC";
 
         $stmt = $conn->prepare($consulta);
 
@@ -140,6 +148,7 @@ $fecha = $_POST['fecha'];
                 $html .= "<td>" . $resultado['plan'] . "</td>";
                 $html .= "<td>" . $resultado['nroafiliado'] . "</td>";
                 $html .= "<td hidden>" . $resultado['valor'] . "</td>";
+                $html .= '<td data-pagado="" hidden>' . $resultado['pagado'] . '</td>';
                 $html .= "</tr>";
             }
         } else {
@@ -147,12 +156,18 @@ $fecha = $_POST['fecha'];
             $html .= "<td colspan='8'>No se encontraron resultados para esta fecha.</td>";
             $html .= "</tr>";
         }
+        
                
 
     } catch (PDOException $e) {
         echo "Error al ejecutar la consulta: " . $e->getMessage();
     }
 }
+
+
+
+
+
 
 // Cerrar la conexión
 $conn = null;
