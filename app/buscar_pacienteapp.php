@@ -84,10 +84,9 @@ try {
             header("Location: ../informacionpaciente.php");
             exit();
         } else {
-            $_SESSION['datosTurnos'] = '';
             // Redirigir a la página "buscar_paciente.php" si no se encontraron resultados
             header("Location: ../informacionpaciente.php");
-            echo 'NO HAY TURNOS DADOS';
+            
             exit();
         }
     }

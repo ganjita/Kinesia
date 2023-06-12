@@ -164,7 +164,7 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6" style="background-color: blue;">
             <div class="card">
                 <div class="card-header">
                     Turnos
@@ -222,10 +222,13 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                                             echo "</tr>";
                                         }
                                     } else {
-                                        echo "<tr>";
-                                        echo "<td>No se encontraron Turnos</td>";
-                                        echo "</tr>";
+
+                                        echo "<tr>  No se encontraron Turnos</tr>";
                                     }
+                                } else {
+                                    echo "<tr>";
+                                    echo "<td>No se encontraron Turnos</td>";
+                                    echo "</tr>";
                                 }
                                 // Mostrar los enlaces de paginación
                                 echo "<nav aria-label='Pagination'>";
@@ -261,14 +264,10 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
             </div>
         </div>
     </div>
-</div>
 
-</div>
-</div>
-
-<div class="container">
-    <div class="row mt-4">
-        <div class="col-md-6">
+    <div class="row-mt-4">
+        <div class="col-md-12">
+            <!-- Columna 1 -->
             <div class="card">
                 <div class="card-header">
                     Imágenes
@@ -291,10 +290,13 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                             <img class="img-fluid" src="img/5.jpg" alt="">
                         </div>
                     </div>
+                    <input type="file" class="form-control input-imagen" style="margin-top: 6px;">
+                    <button id="btn-cargar-imagen" class="btn btn-primary" style="margin-top: 6px;">Cargar Imagen</button>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-12" style="margin-top: 10px;">
+            <!-- Columna 2 -->
             <div class="card">
                 <div class="card-header">
                     Caja-Cliente
@@ -332,6 +334,7 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
     </div>
     <div class="row mt-4">
         <div class="col-md-12">
+            <!-- Columna 3 -->
             <div class="card">
                 <div class="card-header">
                     Notas
@@ -351,6 +354,45 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
         </div>
     </div>
 </div>
+<script>
+$(document).ready(function() {
+    $('#btn-cargar-imagen').click(function() {
+        var idUsuario = $("#id").text();
+        var fileInput = $('.input-imagen')[0];
+        var file = fileInput.files[0];
+        var filePath = fileInput.value;  // Obtener la ruta completa del archivo desde el campo de entrada
+        
+        // Obtener solo el nombre del archivo desde la ruta completa
+        var fileName = filePath.substring(filePath.lastIndexOf('\\') + 1);
+        
+        // Crear un objeto FormData y agregar los datos necesarios
+        var formData = new FormData();
+        formData.append('idUsuario', idUsuario);
+        formData.append('file', file);
+        formData.append('filePath', filePath);  // Agregar la ruta del archivo al FormData
+        formData.append('fileName', fileName);  // Agregar el nombre del archivo al FormData
+        
+        // Realizar la solicitud AJAX
+        $.ajax({
+            url: 'app/cargar_imagenes.php',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                // Aquí puedes realizar cualquier acción con la respuesta recibida
+                console.log('Respuesta del servidor:', response);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // Manejo de errores
+                console.error('Error:', textStatus, errorThrown);
+            }
+        });
+    });
+});
+</script>
+
+
 
 <?php
 // Limpiar las variables de sesión después de mostrar los datos
