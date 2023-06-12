@@ -164,7 +164,7 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                 </div>
             </div>
         </div>
-        <div class="col-md-6" style="background-color: blue;">
+        <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
                     Turnos
@@ -211,13 +211,14 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                                             $valor = $turno['valor'];
                                             $pagado = $turno['pagado'];
                                             // Generar una fila con los datos del turno
-                                            echo "<tr>";
+                                            echo "<tr data-id='" . $id_turno . "'>";
                                             echo "<td>" . $id_turno . "</td>";
                                             echo "<td>" . $fechaTurno . "</td>";
                                             echo "<td>" . $horaTurno . "</td>";
                                             echo "<td>" . $medico . "</td>";
                                             echo "<td>" . $motivo . "</td>";
                                             echo "<td>" . $valor . "</td>";
+                                            echo "<td hidden>" . $pagado . "</td>";
                                             echo "<td>" . convertirValorPagado($pagado) . "</td>";
                                             echo "</tr>";
                                         }
@@ -257,7 +258,34 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                                 echo "</nav>";
                                 ?>
                             </tbody>
-                            <table>
+                        </table>
+                        <!-- Ventana popup -->
+                        <div class="modal fade" id="detalleTurnoModaluser" tabindex="-1" role="dialog" aria-labelledby="detalleTurnoModaluserLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header" id="cerrarmodaluser">
+                                        <h5 class="modal-title" id="detalleTurnoModaluserLabel">Detalles del Turno</h5>
+                                        <button type="button" class="btn-close close" id="closeuser" data-bs-dismiss="modal" aria-label="Close">
+                                        </button>
+                                        <input type="int" id="idTurnoFilauser" name="idTurnoFilauser" hidden>
+                                    </div>
+                                    <div class="modal-body" id="detalleTurnoModalBodyuser">
+                                        <!-- Contenido del detalle del turno -->
+                                    </div>
+                                    <div class="form-check form-check-inline d-flex align-items-center justify-content-center">
+                                        <input class="form-check-input" type="checkbox" id="checkboxuser2" style="margin-left: 3px;" ;>
+                                        <label class=" form-check-label" for="checkboxuser2" style="margin-left: 3px;">ESTA PÁGO (tilda para marcar que esta pagado)</label>
+                                        <button type="button" class="btn btn-success" id="actEstadoBtnuser">Actualizar estado de pago</button>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" id="intercambiarTurnoBtnuser">Intercambiar Turno por otro</button>
+                                        <button type="button" class="btn btn-primary" id="editarFechaBtnuser">Editar Fecha</button>
+                                        <button type="button" class="btn btn-primary" id="editarHoraBtnuser">Editar Hora</button>
+                                        <button type="button" class="btn btn-danger" id="eliminarTurnoBtnuser">Eliminar Turno</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div id="pagination"></div> <!-- Contenedor para los botones de paginación -->
                 </div>
@@ -265,7 +293,7 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
         </div>
     </div>
 
-    <div class="row-mt-4">
+    <div class="row-mt-4" style="margin-top: 10px;">
         <div class="col-md-12">
             <!-- Columna 1 -->
             <div class="card">
@@ -273,29 +301,47 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                     Imágenes
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <img class="img-fluid" src="img/1.jpg" alt="">
+                    <div class="container">
+                        <div class="row" id="image-grid">
+                            <?php
+                            if (isset($_SESSION['datosImg'])) {
+                                $datosImg = $_SESSION['datosImg'];
+                                foreach ($datosImg as $img) {
+                                    $imagen_id = $img["id"];
+                                    $imagen_nombre = $img["nombre_archivo"];
+
+                                    // Obtener los datos de la imagen desde la base de datos
+                                    $imagen_data = $img["imagen"];
+
+                                    // Generar el formato de la etiqueta <img> con la imagen codificada en base64
+                                    $imagen_base64 = base64_encode($imagen_data);
+                                    $imagen_src = 'data:image/jpeg;base64,' . $imagen_base64;
+
+                                    // Mostrar la imagen en la etiqueta <img> con una clase para identificarla
+                                    echo '<div class="col-md-4">
+                                              <img src="' . $imagen_src . '" alt="' . $imagen_nombre . '" class="img-thumbnail small-image">
+                                        </div>';
+                                }
+                            } else {
+                                echo "No se encontraron imágenes para este usuario.";
+                            }
+                            ?>
                         </div>
-                        <div class="col-6 col-md-4">
-                            <img class="img-fluid" src="img/2.jpg" alt="">
-                        </div>
-                        <div class="col-6 col-md-4">
-                            <img class="img-fluid" src="img/3.jpg" alt="">
-                        </div>
-                        <div class="col-6 col-md-4">
-                            <img class="img-fluid" src="img/4.jpg" alt="">
-                        </div>
-                        <div class="col-6 col-md-4">
-                            <img class="img-fluid" src="img/5.jpg" alt="">
-                        </div>
+                    </div>
+
+                    <!-- Contenedor para mostrar la imagen en pantalla completa -->
+                    <div id="fullscreen-image-container">
+                        <img id="fullscreen-image" src="" alt="">
+                        <button id="close-fullscreen-image" class="btn btn-danger">Cerrar</button>
                     </div>
                     <input type="file" class="form-control input-imagen" style="margin-top: 6px;">
                     <button id="btn-cargar-imagen" class="btn btn-primary" style="margin-top: 6px;">Cargar Imagen</button>
                 </div>
             </div>
         </div>
-        <div class="col-md-12" style="margin-top: 10px;">
+    </div>
+    <div class="row mt-4" style="margin-top: 10px;">
+        <div class="col-md-6" style="margin-top: 10px;">
             <!-- Columna 2 -->
             <div class="card">
                 <div class="card-header">
@@ -306,7 +352,6 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                         <label for="saldo-deudor">Saldo Deudor: ($)</label>
                         <?php
                         $cuenta = 0;
-
                         if (isset($datosTurnos)) {
                             foreach ($datosTurnos as $turno) {
                                 $pagado = $turno['pagado'];
@@ -327,13 +372,11 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                         <label for="anotacion-entrega">Anotación:</label>
                         <textarea class="form-control" id="anotacion-entrega" rows="3"></textarea>
                     </div>
-                    <button class="btn btn-primary">Realizar Entrega</button>
+                    <button class="btn btn-primary" style="margin-top: 10px;">Realizar Entrega</button>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row mt-4">
-        <div class="col-md-12">
+        <div class="col-md-6" style="margin-top: 10px;">
             <!-- Columna 3 -->
             <div class="card">
                 <div class="card-header">
@@ -348,48 +391,135 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                         <label for="notas">Notas:</label>
                         <textarea class="form-control" id="notas" rows="5"></textarea>
                     </div>
-                    <button class="btn btn-primary">Guardar</button>
+                    <button class="btn btn-primary" style="margin-top: 10px;">Guardar</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <script>
-$(document).ready(function() {
-    $('#btn-cargar-imagen').click(function() {
-        var idUsuario = $("#id").text();
-        var fileInput = $('.input-imagen')[0];
-        var file = fileInput.files[0];
-        var filePath = fileInput.value;  // Obtener la ruta completa del archivo desde el campo de entrada
-        
-        // Obtener solo el nombre del archivo desde la ruta completa
-        var fileName = filePath.substring(filePath.lastIndexOf('\\') + 1);
-        
-        // Crear un objeto FormData y agregar los datos necesarios
-        var formData = new FormData();
-        formData.append('idUsuario', idUsuario);
-        formData.append('file', file);
-        formData.append('filePath', filePath);  // Agregar la ruta del archivo al FormData
-        formData.append('fileName', fileName);  // Agregar el nombre del archivo al FormData
-        
-        // Realizar la solicitud AJAX
-        $.ajax({
-            url: 'app/cargar_imagenes.php',
-            type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function(response) {
-                // Aquí puedes realizar cualquier acción con la respuesta recibida
-                console.log('Respuesta del servidor:', response);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                // Manejo de errores
-                console.error('Error:', textStatus, errorThrown);
+///////////////////////////////////////////////////////////////////////
+////////////CARGAR IMAGENES EN LA BASE DE DATOS////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+    $(document).ready(function() {
+        $('#btn-cargar-imagen').click(function() {
+            var idUsuario = $("#id").text();
+            var fileInput = $('.input-imagen')[0];
+            var file = fileInput.files[0];
+            var filePath = fileInput.value; // Obtener la ruta completa del archivo desde el campo de entrada
+            var fileName = filePath ? filePath.substring(filePath.lastIndexOf('\\') + 1) : '';
+
+            // Crear un objeto FormData y agregar los datos necesarios
+            var formData = new FormData();
+            formData.append('idUsuario', idUsuario);
+            formData.append('file', file);
+            formData.append('filePath', filePath); // Agregar la ruta del archivo al FormData
+            formData.append('fileName', fileName); // Agregar el nombre del archivo al FormData
+
+            // Realizar la solicitud AJAX
+            $.ajax({
+                url: 'app/cargar_imagenes.php',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    // Aquí puedes realizar cualquier acción con la respuesta recibida
+                    console.log('Respuesta del servidor:', response);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    // Manejo de errores
+                    console.error('Error:', textStatus, errorThrown);
+                }
+            });
+        });
+    });
+////////////////////////////////////////////////////////////////////////////////////////////
+////////////DETALLE DEL TURNO DEL USUARIO DESDE LA FICHA USUARIO///////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+
+    $(document).ready(function() {
+        // Agregar evento de clic a las filas de la tabla
+        $('tbody#turnos-body tr').click(function() {
+            var fila = $(this);
+            console.log(fila);
+
+            // Verificar si la condición se cumple para cargar el código
+            if (fila) {
+                // Manejar el evento de clic en la fila
+                fila.on("click", function(event) {
+                    // Detener la propagación del evento
+                    event.stopPropagation();
+                });
+
+                // Obtener los datos de la fila
+                var fecha = fila.find("td:eq(1)").text();
+                var hora = fila.find("td:eq(2)").text();
+                var medico = fila.find("td:eq(3)").text();
+                var valor = fila.find("td:eq(5)").text();
+                var pagado = parseInt(fila.find("td:eq(6)").text());
+
+                // Construir el contenido del detalle del turno
+                var detalleHtml =
+                    "<p><strong>Médico:</strong> " +
+                    medico +
+                    "</p>" +
+                    "<p><strong>Fecha:</strong> " +
+                    fecha +
+                    "</p>" +
+                    "<p><strong>Hora:</strong> " +
+                    hora +
+                    "</p>" +
+                    "<p><strong>Valor $</strong> " +
+                    valor +
+                    "</p>";
+
+                // Mostrar los detalles del turno en el modal
+                $('#detalleTurnoModaluser .modal-body').html(detalleHtml);
+                // Abrir el modal
+                $('#detalleTurnoModaluser').modal('show');
+
+                ///////////////ANALIZA EL ESTADO DEL CHECKBOX PARA MOSTRARLO TILDADO O NO///////////////////
+
+                var checkboxPagado = document.getElementById("checkboxuser2");
+                var estaPagado = pagado;
+
+                if (estaPagado) {
+                    // El checkbox está marcado
+                    // Establecer el estado del checkbox según el valor obtenido
+                    checkboxPagado.checked = estaPagado === 1; // Asigna true si valorPagado es 1, false en caso contrario
+                } else {
+                    // El checkbox está desmarcado
+                    checkboxPagado.checked = false;
+                }
             }
         });
     });
-});
+////////////////////////////////////////////////////////////////////////////
+///////MANEJA VER LAS IMAGENES DEL USUARIO EN FULL SCREEN///////////////////
+///////////////////////////////////////////////////////////////////////////
+
+    $(document).ready(function() {
+        // Agregar un evento de clic a cada imagen
+        $('.small-image').click(function() {
+            // Obtener la URL de la imagen grande
+            var fullscreenImageUrl = $(this).attr('src');
+
+            // Mostrar la imagen en pantalla completa con transición
+            $('#fullscreen-image').attr('src', fullscreenImageUrl);
+            $('#fullscreen-image-container').fadeIn();
+        });
+
+        // Cerrar la imagen en pantalla completa al hacer clic en el botón "Cerrar" o fuera de la imagen
+        $('#close-fullscreen-image, #fullscreen-image-container').click(function(e) {
+            if (e.target !== this) {
+                return;
+            }
+            $('#fullscreen-image-container').fadeOut();
+        });
+    });
 </script>
 
 

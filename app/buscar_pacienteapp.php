@@ -56,28 +56,35 @@ try {
         $id = $data['id'];
         $datosTurnos = array();
         $datosUsuarios = array();
-    
+        $datosImg = array();
+
         // Primera consulta: Obtener todos los datos de la tabla usuarios
         $consultaUsuarios = "SELECT * FROM usuarios WHERE id = :id";
         $stmtUsuarios = $conn->prepare($consultaUsuarios);
         $stmtUsuarios->bindValue(':id', $id);
         $stmtUsuarios->execute();
         $datosUsuarios = $stmtUsuarios->fetchAll(PDO::FETCH_ASSOC);
-        
-    
         // Almacenar los resultados en una variable de sesión
         $_SESSION['datosUsuarios'] = $datosUsuarios;
-    
+
         // Segunda consulta: Buscar al paciente y sus turnos
         $consultaTurnos = "SELECT * FROM turnos WHERE id_usuario = :id";
         $stmtTurnos = $conn->prepare($consultaTurnos);
         $stmtTurnos->bindValue(':id', $id);
         $stmtTurnos->execute();
         $datosTurnos = $stmtTurnos->fetchAll(PDO::FETCH_ASSOC);
-    
         // Almacenar los resultados en otra variable de sesión
         $_SESSION['datosTurnos'] = $datosTurnos;
-    
+
+        // Consulta SQL para obtener las imágenes según el usuario_id
+        $sql = "SELECT * FROM imagenes WHERE usuario_id = :id";
+        $stmtImg = $conn->prepare($sql);
+        $stmtImg->bindValue(':id', $id);
+        $stmtImg->execute();
+        $datosImg = $stmtImg->fetchAll(PDO::FETCH_ASSOC);
+        // Almacenar los resultados en otra variable de sesión
+        $_SESSION['datosImg'] = $datosImg;
+            
         // Verificar si se encontraron resultados en la segunda consulta
         if (count($datosTurnos) > 0) {
             // Redirigir a la página "informacionpaciente.php"
@@ -86,16 +93,13 @@ try {
         } else {
             // Redirigir a la página "buscar_paciente.php" si no se encontraron resultados
             header("Location: ../informacionpaciente.php");
-            
+
             exit();
         }
     }
-
-    
 } catch (PDOException $e) {
     echo "Error al ejecutar la consulta: " . $e->getMessage();
 }
 
 // Cerrar la conexión
 $conn = null;
-?>
