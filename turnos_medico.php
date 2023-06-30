@@ -6,41 +6,43 @@ session_start();
 ?>
 
 <div class="container" style="margin-top: 30px;">
-  <div class="row">
-    <div class="col-12 col-md-6">
-      <h1>Listado de turnos diarios</h1>
-    </div>
-    <div class="col-12 col-md-6 d-flex justify-content-between align-items-center flex-wrap">
-      <!-- Campo input con el selector de fecha y hora y las clases de bootstrap -->
-      <input type="date" id="fecha" name="fecha" />
-
-      <!-- Botones para el día siguiente y el día anterior con las clases de bootstrap -->
-      <button type="button" id="anterior" name="anterior" class="btn btn-primary selectorFecha" onclick="cambiarDia(-1)">
-        Día anterior
-      </button>
-      <button type="button" id="siguiente" name="siguiente" class="btn btn-primary selectorFecha" onclick="cambiarDia(1)">
-        Día siguiente
-      </button>
-
-      <!-- Formulario de selección de médico -->
-      <form id="formMedico">
-        <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="medico" data-bs-toggle="dropdown" aria-expanded="false">Seleccionar Médico</button>
-          <ul class="dropdown-menu" aria-labelledby="medico">
-            <?php foreach ($medicos as $medico) { ?>
-              <li>
-                <button class="dropdown-item medicoTurnoNuevo" href="#" data-value="<?php echo $medico['id']; ?>"><?php echo $medico['nombre'] . ' ' . $medico['apellido']; ?></button>
-              </li>
-            <?php } ?>
-          </ul>
-          <input type="hidden" class="medicoSeleccionado" id="medicoSeleccionado" name="medicoSeleccionado">
-          <input type="hidden" class="idMedicoSeleccionado" id="idMedicoSeleccionado" name="idMedicoSeleccionado">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <h1>Listado de turnos diarios</h1>
         </div>
-      </form>
-    </div>
-  </div>
-</div>
+        <div class="col-12 col-md-6 d-flex justify-content-between align-items-center flex-wrap">
+            <!-- Campo input con el selector de fecha y hora y las clases de bootstrap -->
+            <input type="date" id="fecha" name="fecha" />
 
+            <!-- Botones para el día siguiente y el día anterior con las clases de bootstrap -->
+            <button type="button" id="anterior" name="anterior" class="btn btn-primary selectorFecha" onclick="cambiarDia(1)">
+                Día anterior
+            </button>
+            <button type="button" id="siguiente" name="siguiente" class="btn btn-primary selectorFecha" onclick="cambiarDia(1)">
+                Día siguiente
+            </button>
+
+            <!-- Formulario de selección de médico -->
+            <form id="formMedico">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="medico" data-bs-toggle="dropdown" aria-expanded="false">Seleccionar Médico</button>
+                    <ul class="dropdown-menu" aria-labelledby="medico">
+                        <li>
+                            <button class="dropdown-item medicoTurnoNuevo" id="tlm" href="#" data-value="tlm">Todos los Turnos</button>
+                        </li>
+                        <?php foreach ($medicos as $medico) { ?>
+                            <li>
+                                <button class="dropdown-item medicoTurnoNuevo" href="#" data-value="<?php echo $medico['id']; ?>"><?php echo $medico['nombre'] . ' ' . $medico['apellido']; ?></button>
+                            </li>
+                        <?php } ?>
+                    </ul>
+                    <input type="hidden" class="medicoSeleccionado" id="medicoSeleccionado" name="medicoSeleccionado">
+                    <input type="hidden" class="idMedicoSeleccionado" id="idMedicoSeleccionado" name="idMedicoSeleccionado">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <div class="container" id="turnos-container">
     <div class="row">
@@ -76,6 +78,7 @@ session_start();
                             <button type="button" class="btn-close close" id="close" data-bs-dismiss="modal" aria-label="Close">
                             </button>
                             <input type="int" id="idTurnoFila" name="idTurnoFila" hidden>
+                            <input type="int" id="idUsuarioFila" name="idUsuarioFila" hidden>
                         </div>
                         <div class="modal-body" id="detalleTurnoModalBody">
                             <!-- Contenido del detalle del turno -->
@@ -90,10 +93,11 @@ session_start();
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" id="intercambiarTurnoBtn">Intercambiar Turno por otro</button>
-
                             <button type="button" class="btn btn-primary" id="editarFechaBtn">Editar Fecha</button>
                             <button type="button" class="btn btn-primary" id="editarHoraBtn">Editar Hora</button>
                             <button type="button" class="btn btn-danger" id="eliminarTurnoBtn">Eliminar Turno</button>
+                            <button type="button" class="btn btn-danger" id="fichaDelPaciente">Ficha del Paciente</button>
+
                         </div>
                     </div>
                 </div>
@@ -209,7 +213,5 @@ session_start();
 
 
             <?php
-            include_once 'plantillas/footer.inc.php';
-
             include_once 'plantillas\cierrehtml.inc.php';
             ?>
