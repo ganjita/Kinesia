@@ -3,10 +3,7 @@ include 'plantillas/navmenu.inc.php';
 include_once 'app/recuperarmedico.inc.php';
 
 session_start();
-
-
 ?>
-
 
 <!-- Usar el componente form de bootstrap 5 -->
 <div class="container" style="margin-top: 30px;">
@@ -56,6 +53,12 @@ session_start();
         <div class="mb-3">
           <label for="telefono" class="form-label">Teléfono:</label>
           <input type="tel" id="telefono" name="telefono" class="form-control">
+        </div>
+
+        <div class="mb-3">
+          <label for="ordenContainer" class="form-label">Orden a la que corresponde el turno solicitado?:</label>
+          <div id="ordenContainer" name="ordenContainer">
+          </div>
         </div>
 
         <div class="mb-3">
@@ -171,10 +174,8 @@ session_start();
     </div>
   </div>
 </div>
-</div>
 
 <?php
-include_once 'plantillas/footer.inc.php';
-
 include 'plantillas/cierrehtml.inc.php';
+
 ?>

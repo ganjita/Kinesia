@@ -1,72 +1,91 @@
-.logo {                      
-    display: flex;              
-    grid-auto-columns: auto ;   
-}                                
-                                 
-.logo h1{                            
-    margin-top: 30px;                
-    margin-left: 5px;                      
-}                                    
-                            
-.imglogo {                           
+.logo {
+    display: flex;
+    grid-auto-columns: auto;
+}
+
+.logo h1 {
+    margin-top: 30px;
+    margin-left: 5px;
+    color: #6accd9;
+}
+
+.imglogo {
     display: inline-block;
-    max-width: 100px;                        
-                           
-}                                           
-                                
-.navbar-collapse{                    
-    margin-left: 200px;          
-}                                     
-                        
-li {                                  
-    list-style: none;                 
-}                                    
+    max-width: 100px;
+
+}
+
+.navbar-collapse {
+    margin-left: 200px;
+}
+
+li {
+    list-style: none;
+}
 
 .checkbox-label {
     position: relative;
     z-index: 9999;
     margin-bottom: 10px;
-  }
-  
-  .checkbox-label input[type="checkbox"] {
+}
+
+.checkbox-label input[type="checkbox"] {
     position: absolute;
     top: 0;
     left: 0;
     z-index: -1;
     opacity: 0;
-  }
+}
 
-  .card-header {
+.card-header {
     background-color: #262728;
     font-weight: bold;
-  }
+    color: #110d0d;
+}
 
-  .form-group label {
+.form-group label {
     font-weight: bold;
-  }
-  
-  .content-box {
+}
+
+.content-box {
     border: 1px solid #ddd;
     padding: 20px;
     border-radius: 10px;
     margin-top: 20px;
-  }
+}
 
-  .rating input[type="radio"] {
+.rating input[type="radio"] {
     display: none;
-  }
-  
-  .rating label {
+}
+
+.rating label {
     display: inline-block;
     color: #ccc;
     cursor: pointer;
-  }
-  
-  .rating label i {
+}
+
+.rating label i {
     font-size: 24px;
-  }
-  
-  .rating input[type="radio"]:checked + label {
+}
+
+.rating input[type="radio"]:checked+label {
     color: #ffcc00;
-  }
-  
+
+}
+
+.card {
+    border: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s;
+}
+
+.card-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.card-text {
+    font-size: 1.2rem;
+    color: #666;
+}

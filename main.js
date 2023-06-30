@@ -66,10 +66,48 @@ document.addEventListener("DOMContentLoaded", function () {
         $("#plan").val(plan);
         $("#nroafiliado").val(nroafiliado);
         $("#telefono").val(telefono);
+
+        // Realizar una solicitud AJAX al archivo PHP para recuperar las ordenes por el id_usuario
+        $.ajax({
+          url: "app/recuperar_orden.inc.php", // Verifica la ruta correcta del archivo PHP
+          method: "POST",
+          data: { id_usuario: idPaciente },
+          success: function (response) {
+            // Crear un elemento <select> con el contenido HTML devuelto
+            var selectElement = $(response);
+
+            // Vaciar el contenido actual del contenedor div
+            $("#ordenContainer").empty();
+
+            // Agregar el elemento <select> al contenedor <div>
+            $("#ordenContainer").append(selectElement);
+
+            console.log("BIEN");
+          },
+          error: function () {
+            // Manejar el error en caso de que la solicitud falle
+          },
+        });
       });
     });
   }
 });
+//////////////////////////////////////////////////////////////////////////////
+////////GUARDAR EL ID DE LA ORDEN CUANDO SE SELECCIONA EN INPUT OCULTO///////
+/////////////////////////////////////////////////////////////////////////////
+
+$(document).ready(function() {
+  // Manejar el evento de cambio en el select
+  $(document).on("change", "#orden", function() {
+    // Obtener el valor seleccionado del select
+    var valorSeleccionado = $(this).val();
+    
+
+    // Actualizar el valor del input oculto
+    $("#idOrdenSeleccionada").val(valorSeleccionado);
+  });
+});
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //SELECCIONAR EL MEDICO DEL DROPDOWN EN NUEVO TURNO Y ENVIAR EL TEXTO DEL DROPDOWN PARA LA BASE DE DATOS/////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,44 +144,12 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////MUESTRA LOS MEDICOS DE LA BASE DE DATOS EN UN BOTON QUE TIENE LA CLASE medicoTurnoNuevo////////////
-///////////////////////////////////////// De TURNOS_MEDICOS.PHP ////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-$(document).ready(function () {
-  $(".medicoTurnoNuevo").click(function (e) {
-    e.preventDefault(); // Evitar el comportamiento predeterminado del enlace
-
-    // Obtener el valor de data-value
-    var medicoId = $(this).text();
-    var fecha = document.getElementById("fecha").value;
-
-    // Realizar la solicitud Ajax
-    $.ajax({
-      url: "app/obtenerturnosmedico1.php", // URL del archivo PHP que realiza la consulta
-      type: "POST",
-      data: { medicoSeleccionado: medicoId, fecha: fecha }, // Datos que se enviarán al servidor (en este caso, el ID del médico y la fecha)
-      dataType: "html", // Tipo de datos esperados en la respuesta (puede ser 'json' si el servidor devuelve JSON)
-      success: function (response) {
-        // Actualizar la interfaz con los resultados obtenidos
-        $("#resultadoTurnos").html(response);
-      },
-      error: function (xhr, status, error) {
-        // Manejar errores de la solicitud Ajax
-        console.log(xhr.responseText);
-      },
-    });
-  });
-});
-
-
 ////////////////////////////////////////////////////////////////////
 /////CLICK EN LA FILA DE LOS TURNOS Y SE ABRE LA VENTANA POPUP/////
 ///////////////////////////////////////////////////////////////////
 
 // Esperar a que se cargue el DOM
-document.addEventListener("DOMContentLoaded", function () {
+$(document).ready(function () {
   // Verificar si el elemento que deseas bloquear existe
   var fila = document.getElementById("fila-bloqueada");
 
@@ -160,20 +166,21 @@ document.addEventListener("DOMContentLoaded", function () {
     var tablaBody = document.getElementById("resultadoTurnos");
 
     // Agregar el evento de clic a las filas generadas dinámicamente
-    tabla.addEventListener("click", function (event) {
-      var fila = event.target.closest("tr");
+    $(tabla).on("click", "tr", function () {
+      var fila = $(this);
       if (fila) {
         // Obtener los datos de la fila
-        var medico = fila.cells[0].textContent;
-        var fecha = fila.cells[1].textContent;
-        var hora = fila.cells[2].textContent;
-        var paciente = fila.cells[3].textContent;
-        var telefono = fila.cells[4].textContent;
-        var obraSocial = fila.cells[5].textContent;
-        var plan = fila.cells[6].textContent;
-        var nroAfiliado = fila.cells[7].textContent;
-        var valor = fila.cells[8].textContent;
-        var pagado = parseInt(fila.cells[9].textContent);
+        var medico = fila.find("td:nth-child(1)").text();
+        var fecha = fila.find("td:nth-child(2)").text();
+        var hora = fila.find("td:nth-child(3)").text();
+        var paciente = fila.find("td:nth-child(4)").text();
+        var telefono = fila.find("td:nth-child(5)").text();
+        var obraSocial = fila.find("td:nth-child(6)").text();
+        var plan = fila.find("td:nth-child(7)").text();
+        var nroAfiliado = fila.find("td:nth-child(8)").text();
+        var valor = fila.find("td:nth-child(9)").text();
+        var pagado = parseInt(fila.find("td:nth-child(10)").text());
+        var id_usuario = fila.find("td:nth-child(11)").text();
 
         // Construir el contenido del detalle del turno
         var detalleHtml =
@@ -220,17 +227,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // Insertar el contenido del detalle del turno en el modal
-        document.getElementById("detalleTurnoModalBody").innerHTML =
-          detalleHtml;
+        $("#detalleTurnoModalBody").html(detalleHtml);
 
         // Obtener el ID del turno
-        var idTurno = fila.getAttribute("data-idturno");
+        var idTurno = fila.attr("data-idturno");
 
         // Establecer el ID del turno en los campos ocultos de los popups para utilizarlo en la base de datos
-        document.getElementById("turnoIdFecha").value = idTurno;
-        document.getElementById("turnoIdHora").value = idTurno;
-        document.getElementById("turnoIdEliminar").value = idTurno;
-        document.getElementById("idTurnoPadre").value = idTurno;
+        $("#turnoIdFecha").val(idTurno);
+        $("#turnoIdHora").val(idTurno);
+        $("#turnoIdEliminar").val(idTurno);
+        $("#idTurnoPadre").val(idTurno);
+        $("#idUsuarioFila").val(id_usuario);
 
         // Abrir el modal
         $("#detalleTurnoModal").modal("show");
@@ -238,6 +245,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
+
 ////////////////////////////////////////////////////
 // Manejar el evento de clic en "Editar Fecha"/////
 ///////////////////////////////////////////////////
@@ -506,91 +514,109 @@ document.addEventListener("DOMContentLoaded", function () {
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /////////CONSULTAR LA BASE DE DATOS SEGUN EL DIA SELECCIONADO EN EL INPUTFECHA/////////////////
 ////////////////////////DE LA PAGINA TURNOS_MEDICO.PHP////////////////////////////////////////
+$(document).ready(function () {
+  // Obtener el elemento de fecha y médico
+  var fechaElement = $("#fecha");
+  var medicoDropdown = $(".medicoTurnoNuevo"); // Obtener los elementos del dropdown con la clase "medicoTurnoNuevo"
+  var medicoButton = $("#medico"); // Obtener el botón del dropdown con el id "medico"
 
-function realizarConsulta(fecha, medico) {
-  // Crear una instancia de XMLHttpRequest
-  var xhr = new XMLHttpRequest();
+  // Función para realizar la solicitud Ajax y actualizar la interfaz
+  function realizarConsulta() {
+    var fecha = fechaElement.val();
+    var medico = medicoButton.attr("data-value"); // Obtener el valor del atributo "data-value" del botón principal
 
-  // Configurar la solicitud
-  xhr.open("POST", "app/obtenerturnosmedico1.php", true);
-  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-  // Definir la función de callback cuando la solicitud se complete
-  xhr.onload = function () {
-    if (xhr.status === 200) {
-      // Actualizar la interfaz con los resultados obtenidos
-      document.getElementById("resultadoTurnos").innerHTML = xhr.responseText;
-    } else {
-      // Manejar errores de la solicitud
-      console.error("Error en la solicitud. Estado: " + xhr.status);
+    // Verificar si se ha seleccionado un médico
+    if (!medico) {
+      return; // Salir de la función sin realizar la consulta
     }
-  };
 
-  // Crear los datos que se enviarán al servidor
-  var data = "fecha=" + encodeURIComponent(fecha) + "&medico=" + encodeURIComponent(medico);
+    // Realizar la solicitud Ajax
+    $.ajax({
+      url: "app/obtenerturnosmedico1.php",
+      type: "POST",
+      data: { fecha: fecha, medico: medico }, // Corregir el orden de los parámetros
+      dataType: "html",
+      success: function (response) {
+        // Actualizar la interfaz con los resultados obtenidos
+        $("#resultadoTurnos").html(response);
+      },
+      error: function (xhr, status, error) {
+        // Manejar errores de la solicitud Ajax
+        console.log(xhr.responseText);
+      },
+    });
+  }
 
-  // Enviar la solicitud con los datos
-  xhr.send(data);
-}
+  // Asignar el evento click a los elementos <li> del dropdown
+  medicoDropdown.closest("li").on("click", function (event) {
+    event.preventDefault(); // Prevenir el comportamiento predeterminado del evento
 
-// Obtener el elemento de fecha y médico
-var fechaElement = document.getElementById("fecha");
-var medicoElement = document.getElementById("idMedicoSeleccionado");
+    // Obtener el valor y el texto del elemento seleccionado
+    var medicoValue = $(this).find(".medicoTurnoNuevo").attr("data-value");
+    var medicoText = $(this).find(".medicoTurnoNuevo").text();
 
-if (fechaElement && medicoElement) {
-  // Obtener el valor inicial del médico seleccionado
-  var medicoSeleccionado = medicoElement.value;
+    // Actualizar el valor del input oculto y el texto del botón del dropdown
+    $(".medicoSeleccionado").val(medicoText);
+    $("#idMedicoSeleccionado").val(medicoValue);
+    medicoButton.text(medicoText);
+    medicoButton.attr("data-value", medicoValue); // Actualizar el atributo data-value del botón principal
+
+    realizarConsulta();
+  });
 
   // Asignar el evento change al elemento de fecha
-  fechaElement.addEventListener("change", function () {
-    var fecha = fechaElement.value;
-    var medico = medicoElement.value || medicoSeleccionado; // Usar el médico seleccionado si no hay un valor seleccionado en el momento del cambio de fecha
-    realizarConsulta(fecha, medico);
+  fechaElement.on("change", function () {
+    realizarConsulta();
   });
 
-  // Asignar el evento change al elemento de médico
-  medicoElement.addEventListener("change", function () {
-    var fecha = fechaElement.value;
-    var medico = medicoElement.value;
-    realizarConsulta(fecha, medico);
-  });
-}
+  // Obtener la fecha actual como un objeto Date
+  var ahora = new Date();
+  // Formatear la fecha actual como una cadena en el formato AAAA-MM-DD
+  var valor =
+    ahora.getFullYear() +
+    "-" +
+    ("0" + (ahora.getMonth() + 1)).slice(-2) +
+    "-" +
+    ("0" + ahora.getDate()).slice(-2);
+  // Asignar el valor al input de fecha
+  fechaElement.val(valor);
 
-// Obtener los botones de día anterior y día siguiente
-var botonAnterior = document.getElementById("anterior");
-var botonSiguiente = document.getElementById("siguiente");
+  // Llamar a realizarConsulta() al cargar la página para obtener los resultados iniciales
+  realizarConsulta();
 
-if (botonAnterior && botonSiguiente) {
+  // Obtener los botones de día anterior y día siguiente
+  var botonAnterior = $("#anterior");
+  var botonSiguiente = $("#siguiente");
+
   // Asignar el evento click a los botones
-  botonAnterior.addEventListener("click", function () {
-    var fechaAnterior = restarDia(fechaElement.value);
-    fechaElement.value = fechaAnterior;
-    var medico = medicoElement.value || medicoSeleccionado; // Usar el médico seleccionado si no hay un valor seleccionado en el momento del cambio de fecha
-    realizarConsulta(fechaAnterior, medico);
+  botonAnterior.on("click", function (e) {
+    e.preventDefault();
+    var fechaAnterior = restarDia(fechaElement.val());
+    fechaElement.val(fechaAnterior);
+    realizarConsulta();
   });
 
-  botonSiguiente.addEventListener("click", function () {
-    var fechaSiguiente = sumarDia(fechaElement.value);
-    fechaElement.value = fechaSiguiente;
-    var medico = medicoElement.value || medicoSeleccionado; // Usar el médico seleccionado si no hay un valor seleccionado en el momento del cambio de fecha
-    realizarConsulta(fechaSiguiente, medico);
+  botonSiguiente.on("click", function (e) {
+    e.preventDefault();
+    var fechaSiguiente = sumarDia(fechaElement.val());
+    fechaElement.val(fechaSiguiente);
+    realizarConsulta();
   });
-}
 
-// Función para restar un día a una fecha en formato YYYY-MM-DD
-function restarDia(fecha) {
-  var fechaActual = new Date(fecha);
-  fechaActual.setDate(fechaActual.getDate() + 1);
-  return fechaActual.toISOString().split("T")[0];
-}
+  // Función para restar un día a una fecha en formato YYYY-MM-DD
+  function restarDia(fecha) {
+    var fechaActual = new Date(fecha);
+    fechaActual.setDate(fechaActual.getDate() - 1);
+    return fechaActual.toISOString().split("T")[0];
+  }
 
-// Función para sumar un día a una fecha en formato YYYY-MM-DD
-function sumarDia(fecha) {
-  var fechaActual = new Date(fecha);
-  fechaActual.setDate(fechaActual.getDate() + 1);
-  return fechaActual.toISOString().split("T")[0];
-}
-
+  // Función para sumar un día a una fecha en formato YYYY-MM-DD
+  function sumarDia(fecha) {
+    var fechaActual = new Date(fecha);
+    fechaActual.setDate(fechaActual.getDate() + 1);
+    return fechaActual.toISOString().split("T")[0];
+  }
+});
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////MANEJAR LOS DATOS DE LA VENTANA MODAL "INTERCAMBIAR TURNO"/////////////////////////////
@@ -767,7 +793,7 @@ document.addEventListener("DOMContentLoaded", function () {
           xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
               // Aquí puedes manejar la respuesta del servidor
-              console.log(xhr.responseText);
+
               // Redirigir a la página "informacionpaciente.php"
               window.location.href = "informacionpaciente.php";
             }
@@ -778,3 +804,38 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 });
+
+//////////////////////////////////////////////////////////////////////////////
+////////BUSCAR LA FICHA DEL PACIENTE DESDE EL MODAL DE TURNO/////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+$(document).ready(function () {
+  // Evento click del botón "Ficha del Paciente"
+  $("#fichaDelPaciente").on("click", function () {
+    // Obtener el ID del paciente
+    var pacienteId = document.getElementById("idUsuarioFila").value;
+
+    // Realizar la solicitud Ajax
+    var data = {
+      id: pacienteId,
+    };
+
+    // Realizar la solicitud AJAX al servidor para enviar los datos
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "app/buscar_pacienteapp.php", true);
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        // Aquí puedes manejar la respuesta del servidor
+        console.log(xhr.responseText);
+        // Redirigir a la página "informacionpaciente.php"
+        window.location.href = "informacionpaciente.php";
+      }
+    };
+    xhr.send(JSON.stringify(data));
+  });
+});
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////RECUPERAR ORDENES DEL USUARIO PASADO POR ID////////////////////
+/////////////////////////////////////////////////////////////////////////////

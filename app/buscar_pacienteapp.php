@@ -57,6 +57,7 @@ try {
         $datosTurnos = array();
         $datosUsuarios = array();
         $datosImg = array();
+        $datosOrdenes = array(); // Array para almacenar las órdenes
 
         // Primera consulta: Obtener todos los datos de la tabla usuarios
         $consultaUsuarios = "SELECT * FROM usuarios WHERE id = :id";
@@ -84,16 +85,31 @@ try {
         $datosImg = $stmtImg->fetchAll(PDO::FETCH_ASSOC);
         // Almacenar los resultados en otra variable de sesión
         $_SESSION['datosImg'] = $datosImg;
-            
+
+        // Consulta SQL para obtener las órdenes según el usuario_id
+        $sqlOrdenes = "SELECT * FROM ordenes WHERE id_usuario = :id";
+        $stmtOrdenes = $conn->prepare($sqlOrdenes);
+        $stmtOrdenes->bindValue(':id', $id);
+        $stmtOrdenes->execute();
+        $datosOrdenes = $stmtOrdenes->fetchAll(PDO::FETCH_ASSOC);
+        // Almacenar los resultados en otra variable de sesión
+        $_SESSION['datosOrdenes'] = $datosOrdenes;
+
         // Verificar si se encontraron resultados en la segunda consulta
         if (count($datosTurnos) > 0) {
+            // Almacenar los resultados en variables de sesión
+            $_SESSION['resultados'] = $resultados;
+            $_SESSION['datosUsuarios'] = $datosUsuarios;
+            $_SESSION['datosTurnos'] = $datosTurnos;
+            $_SESSION['datosImg'] = $datosImg;
+            $_SESSION['datosOrdenes'] = $datosOrdenes;
+
             // Redirigir a la página "informacionpaciente.php"
             header("Location: ../informacionpaciente.php");
             exit();
         } else {
             // Redirigir a la página "buscar_paciente.php" si no se encontraron resultados
             header("Location: ../informacionpaciente.php");
-
             exit();
         }
     }

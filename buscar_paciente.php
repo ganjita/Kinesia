@@ -87,6 +87,5 @@ session_start();
 
 <?php
 session_unset();
-include_once 'plantillas/footer.inc.php';
 include_once 'plantillas/cierrehtml.inc.php';
 ?>

@@ -43,9 +43,8 @@ if (isset($_POST['busqueda'])) {
     } 
     
     else if(isset($_POST['regturno'])) {
-        var_dump($_POST);
         $busqueda = $_POST['regturno'];
-
+    
         $id_usuario = $_POST['id-paciente']; // ID del paciente seleccionado
         $fecha_turno = $_POST['fecha'];
         $hora_turno = $_POST['hora'];
@@ -54,19 +53,18 @@ if (isset($_POST['busqueda'])) {
         $motivo = $_POST['motivo'];
         $valor = $_POST['valor-consulta'];
         $pagado = $pagado = isset($_POST['checkpagoturno']) ? 1 : 0;
-
+        $idOrdenSeleccionada = $_POST['orden'];
     
-
         try {
             $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        
+    
             // Preparar la consulta SQL para insertar los datos
-            $sql = "INSERT INTO turnos (id_usuario, fecha_turno, hora_turno, id_medico, medico, motivo, valor, pagado) 
-                     VALUES (:id_usuario, :fecha_turno, :hora_turno, :id_medico, :medico, :motivo, :valor, :pagado)";
-
+            $sql = "INSERT INTO turnos (id_usuario, fecha_turno, hora_turno, id_medico, medico, motivo, valor, pagado, id_orden) 
+                     VALUES (:id_usuario, :fecha_turno, :hora_turno, :id_medico, :medico, :motivo, :valor, :pagado, :id_orden)";
+    
             $stmt = $conn->prepare($sql);
-        
+    
             // Asignar los valores a los parámetros de la consulta
             $stmt->bindParam(':id_usuario', $id_usuario);
             $stmt->bindParam(':fecha_turno', $fecha_turno);
@@ -76,19 +74,22 @@ if (isset($_POST['busqueda'])) {
             $stmt->bindParam(':motivo', $motivo);
             $stmt->bindParam(':valor', $valor);
             $stmt->bindParam(':pagado', $pagado);
-        
+            $stmt->bindParam(':id_orden', $idOrdenSeleccionada);
+    
             // Ejecutar la consulta
             $stmt->execute();
-        
+    
+            // Actualizar el valor de sesiones_restantes en la tabla ordenes
+            $sqlUpdate = "UPDATE ordenes SET sesiones_restantes = sesiones_restantes - 1, ultima_actualizacion = NOW() WHERE id = :id_orden";
+            $stmtUpdate = $conn->prepare($sqlUpdate);
+            $stmtUpdate->bindParam(':id_orden', $idOrdenSeleccionada);
+            $stmtUpdate->execute();
+    
             header('location: ../nuevo_turno.php');
-        
+    
         } catch(PDOException $e) {
             echo "Error al insertar datos: " . $e->getMessage();
         }
-
-
-
     }
+    
 }
-
-?>

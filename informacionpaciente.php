@@ -1,5 +1,8 @@
 <?php
 include_once 'plantillas/navmenu.inc.php';
+include_once 'app/obtener_notas.inc.php';
+include_once 'app/recuperarmedico.inc.php';
+
 
 session_start();
 
@@ -111,12 +114,64 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                             </tbody>
                         </table>
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarPacienteModal">Editar Información Paciente</button>
-                        <div class="modal fade" id="editarPacienteModal" tabindex="-1" aria-labelledby="editarPacienteModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
+                        <button id="agregar-turno" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-agregar-turno">Agregar Turno</button>
+
+                        <!-- Ventana modal agregar turno-->
+                        <div id="modal-agregar-turno" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="modal-agregar-turnoLabel">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Agregar Turno</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="form-agregar-turno" action="procesar_turno.php" method="POST">
+                                            <input type="hidden" name="id-paciente" id="id-paciente" value="">
+                                            <div class="mb-3">
+                                                <label for="fecha" class="form-label">Fecha del Turno:</label>
+                                                <input type="date" class="form-control" name="fecha" id="fecha" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="hora" class="form-label">Hora del Turno:</label>
+                                                <input type="time" class="form-control" name="hora" id="hora" required>
+                                            </div>
+                                            <select class="form-select" name="medico-cargarturno" id="medico-cargarturno" required>
+                                                <option value="">Seleccionar Médico</option>
+                                                <?php foreach ($medicos as $medico) { ?>
+                                                    <option value="<?php echo $medico['id']; ?>"><?php echo $medico['nombre'] . ' ' . $medico['apellido']; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                            <input type="hidden" id="idMedico-cargarTurno" name="idMedico-cargarTurno">
+                                            <div class="mb-3">
+                                                <label for="motivo" class="form-label">Motivo:</label>
+                                                <textarea class="form-control" name="motivo-cargarturno" id="motivo-cargarturno" rows="4" required></textarea>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="valor-consulta" class="form-label">Valor: $</label>
+                                                <input type="number" class="form-control" name="valor-consulta" id="valor-consulta" required>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" name="checkpagoturno" id="checkpagoturno">
+                                                <label class="form-check-label" for="checkpagoturno">¿Pago del Turno?</label>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary" id="cargar-turno">Agregar Turno</button>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ventana modal Editar Informacion -->
+
+                        <div class="modal fade" id="editarPacienteModal" tabindex="-1" aria-labelledby="editarPacienteModalLabel" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="editarPacienteModalLabel">Editar Información del Paciente</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <!-- Contenido del formulario de edición -->
@@ -155,7 +210,9 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                                         </form>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary">Guardar cambios</button>
+                                        <!-- Botón de cierre de la ventana modal -->
+                                        <button type="button" class="btn btn-primary" id="guardarCambios">Guardar cambios</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                                     </div>
                                 </div>
                             </div>
@@ -211,7 +268,7 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                                             $valor = $turno['valor'];
                                             $pagado = $turno['pagado'];
                                             // Generar una fila con los datos del turno
-                                            echo "<tr data-id='" . $id_turno . "'>";
+                                            echo "<tr data-id='" . $id_turno . "' class='fila-turno'>";
                                             echo "<td>" . $id_turno . "</td>";
                                             echo "<td>" . $fechaTurno . "</td>";
                                             echo "<td>" . $horaTurno . "</td>";
@@ -259,11 +316,12 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                                 ?>
                             </tbody>
                         </table>
+
                         <!-- Ventana popup -->
                         <div class="modal fade" id="detalleTurnoModaluser" tabindex="-1" role="dialog" aria-labelledby="detalleTurnoModaluserLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
-                                    <div class="modal-header" id="cerrarmodaluser">
+                                    <div class="modal-header">
                                         <h5 class="modal-title" id="detalleTurnoModaluserLabel">Detalles del Turno</h5>
                                         <button type="button" class="btn-close close" id="closeuser" data-bs-dismiss="modal" aria-label="Close">
                                         </button>
@@ -275,19 +333,125 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                                     <div class="form-check form-check-inline d-flex align-items-center justify-content-center">
                                         <input class="form-check-input" type="checkbox" id="checkboxuser2" style="margin-left: 3px;" ;>
                                         <label class=" form-check-label" for="checkboxuser2" style="margin-left: 3px;">ESTA PÁGO (tilda para marcar que esta pagado)</label>
-                                        <button type="button" class="btn btn-success" id="actEstadoBtnuser">Actualizar estado de pago</button>
+                                        <button type="button" class="btn btn-success" id="actEstadoUserBtn">Actualizar estado de pago</button>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" id="intercambiarTurnoBtnuser">Intercambiar Turno por otro</button>
-                                        <button type="button" class="btn btn-primary" id="editarFechaBtnuser">Editar Fecha</button>
-                                        <button type="button" class="btn btn-primary" id="editarHoraBtnuser">Editar Hora</button>
-                                        <button type="button" class="btn btn-danger" id="eliminarTurnoBtnuser">Eliminar Turno</button>
+                                        <button type="button" class="btn btn-primary" id="intercambiarTurnoUserBtn">Intercambiar Turno por otro</button>
+                                        <button type="button" class="btn btn-primary" id="editarFechaUserBtn">Editar Fecha</button>
+                                        <button type="button" class="btn btn-primary" id="editarHoraUserBtn">Editar Hora</button>
+                                        <button type="button" class="btn btn-danger" id="eliminarTurnoUserBtn">Eliminar Turno</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Popup para editar la fecha -->
+                        <div class="modal fade" id="editarFechaModalUser" tabindex="-1" role="dialog" aria-labelledby="editarFechaModalUserLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content bg-info">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editarFechaModalUserLabel">Editar Fecha</h5>
+                                        <button type="button" class="btn-close close" aria-label="Close">
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="date" id="nuevaFechaUser" class="form-control">
+                                        <input type="hidden" id="turnoIdFechaUser">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" id="confirmarFechaUserBtn">Confirmar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Popup para editar la hora -->
+                        <div class="modal fade" id="editarHoraModalUser" tabindex="-1" role="dialog" aria-labelledby="editarHoraModalUserLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editarHoraModalUserLabel">Editar Hora</h5>
+                                        <button type="button" class="btn-close close" aria-label="Close">
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="time" id="nuevaHoraUser" class="form-control">
+                                        <input type="hidden" id="turnoIdHoraUser">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" id="confirmarHoraUserBtn">Confirmar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Popup para Intercambiar turno -->
+                        <div class="modal fade" id="cambiarTurnoModalUser" tabindex="-1" role="dialog" aria-labelledby="cambiarTurnoModalUserLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="popupModalUserLabel">Intercambiar turno por otro que este en que fecha y hora? (Tiene que ser exacto):</h5>
+                                        <button type="button" class="btn-close close" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="popupForm">
+                                            <div class="mb-3">
+                                                <label for="fecha" class="form-label">Fecha:</label>
+                                                <input type="date" class="form-control" id="fechaIntercambioTurnoUser" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <br>
+                                                <label for="cambioTurno" class="form-label">El turno actual se cambiara por el siguiente:</label>
+                                                <input type="hidden" id="idTurnoSeleccionadoUser" name="idTurnoSeleccionadoUser">
+                                                <input type="hidden" id="idTurnoPadreUser" name="idTurnoPadreUser">
+                                                <input type="text" class="form-control" id="campoTurnoSeleccionadoUser" placeholder="Turno por el que se hara el cambio" readonly>
+                                            </div>
+                                            <button type="button" class="btn btn-primary" id="consultarTurnosDisponibleUser">Consultar</button>
+                                            <button type="button" class="btn btn-success" id="cambiarTurnoUser">Cambiar Turno</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Popup para mostrar los resultados de la búsqueda -->
+                        <div class="modal fade" id="resultadosModalUser" tabindex="-1" role="dialog" aria-labelledby="resultadosModalUserLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="resultadosModalUserLabel">Resultados de la búsqueda</h5>
+                                        <button type="button" class="btn-close close" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body" id="resultadosBusquedaUser">
+                                        <!-- Aquí se mostrarán los resultados de la búsqueda -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ventana de confirmación -->
+                        <div class="modal fade" id="confirmacionModalUser" tabindex="-1" role="dialog" aria-labelledby="confirmacionModalUserLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmacionModalUserLabel">Confirmar Eliminación</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        ¿Estás seguro de que deseas eliminar el turno?
+                                    </div>
+                                    <input type="hidden" id="turnoIdEliminarUser">
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="button" class="btn btn-danger" id="confirmarEliminacionUserBtn">Confirmar</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div id="pagination"></div> <!-- Contenedor para los botones de paginación -->
+                    <div id="pagination">
+                        <!-- Contenedor para los botones de paginación -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -298,9 +462,10 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
             <!-- Columna 1 -->
             <div class="card">
                 <div class="card-header">
-                    Imágenes
+                    <h5 class="card-title">Imágenes</h5>
+                    <button class="btn btn-sm btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#image-card-body" aria-expanded="false" aria-controls="image-card-body">Ocultar/Mostrar</button>
                 </div>
-                <div class="card-body">
+                <div id="image-card-body" class="card-body collapse">
                     <div class="container">
                         <div class="row" id="image-grid">
                             <?php
@@ -328,20 +493,28 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                             ?>
                         </div>
                     </div>
-
-                    <!-- Contenedor para mostrar la imagen en pantalla completa -->
-                    <div id="fullscreen-image-container">
-                        <img id="fullscreen-image" src="" alt="">
-                        <button id="close-fullscreen-image" class="btn btn-danger">Cerrar</button>
-                    </div>
-                    <input type="file" class="form-control input-imagen" style="margin-top: 6px;">
-                    <button id="btn-cargar-imagen" class="btn btn-primary" style="margin-top: 6px;">Cargar Imagen</button>
                 </div>
+            </div>
+
+            <!-- Contenedor para mostrar la imagen en pantalla completa -->
+            <div class="modal fade" id="fullscreen-modal" tabindex="-1" aria-labelledby="fullscreen-modal-label" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <img src="" alt="" id="fullscreen-image" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container card-header">
+                <input type="file" class="form-control input-imagen" style="margin-top: 6px;">
+                <button id="btn-cargar-imagen" class="btn btn-primary" style="margin-top: 6px;">Cargar Imagen</button>
             </div>
         </div>
     </div>
+
     <div class="row mt-4" style="margin-top: 10px;">
-        <div class="col-md-6" style="margin-top: 10px;">
+        <div class="col-md-4" style="margin-top: 10px;">
             <!-- Columna 2 -->
             <div class="card">
                 <div class="card-header">
@@ -365,167 +538,302 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                         <input type="text" class="form-control" id="saldo-deudor" readonly value="<?php echo $cuenta ?>">
                     </div>
                     <div class="form-group">
-                        <label for="entrega-parcial">Entrega Parcial: ($)</label>
-                        <input type="text" class="form-control" id="entrega-parcial">
-                    </div>
-                    <div class="form-group">
                         <label for="anotacion-entrega">Anotación:</label>
-                        <textarea class="form-control" id="anotacion-entrega" rows="3"></textarea>
+                        <input class="form-control" id="anotacion-entrega">
                     </div>
                     <button class="btn btn-primary" style="margin-top: 10px;">Realizar Entrega</button>
                 </div>
             </div>
         </div>
-        <div class="col-md-6" style="margin-top: 10px;">
-            <!-- Columna 3 -->
+
+        <div class="col-md-8" style="margin-top: 10px;">
+            <!-- Columna 4 -->
             <div class="card">
                 <div class="card-header">
-                    Notas
+                    Ordenes
                 </div>
                 <div class="card-body">
-                    <div class="form-group">
-                        <label for="fecha-actual">Fecha Actual:</label>
-                        <input type="text" class="form-control" id="fecha-actual" disabled>
+                    <!-- Lista de órdenes -->
+                    <ul id="ordenList" class="list-group">
+                        <?php
+                        if (isset($_SESSION['datosOrdenes'])) {
+                            $datosOrdenes = $_SESSION['datosOrdenes'];
+                            foreach ($datosOrdenes as $orden) {
+                                echo '<li class="list-group-item" data-orden="' . htmlspecialchars(json_encode($orden)) . '">' . "(Fecha) -" . " " .  $orden['fecha_orden'] . ' ' . "- (Medico que ordeno:) " . $orden['medico_expedicion'] . " " . " - (Sesiones restantes:) " .  $orden['sesiones_restantes'] . '</li>';
+                            }
+                        } else {
+                            echo '<li class="list-group-item">No se encontraron órdenes</li>';
+                        }
+                        ?>
+                    </ul>
+
+                    <!-- Modal de detalle de la orden -->
+                    <div class="modal fade" id="ordenModal" tabindex="-1" role="dialog" aria-labelledby="ordenModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="ordenModalLabel">Detalle de la Orden</h5>
+                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="modal-body">
+                                            <p><strong>Fecha de la Orden:</strong>
+                                                <br>
+                                                <span id="ordenFecha"></span>
+                                            </p>
+                                            <p><strong>Médico que la pidió:</strong>
+                                                <br>
+                                                <span id="ordenMedico"></span>
+                                            </p>
+                                            <p><strong>Kinesiólogo asignado:</strong>
+                                                <br>
+                                                <span id="ordenKinesiologo"></span>
+                                            </p>
+                                            <p><strong>Cantidad de Sesiones:</strong>
+                                                <br>
+                                                <span id="ordenSesiones"></span>
+                                            </p>
+                                            <p><strong>Autorización:</strong>
+                                                <br>
+                                                <span id="ordenAutorizacion"></span>
+                                            </p>
+                                            <p><strong>Fecha de Autorización:</strong>
+                                                <br>
+                                                <span id="ordenFechaAutorizacion"></span>
+                                            </p>
+                                            <p><strong>Mes de facturacion:</strong>
+                                                <br>
+                                                <span id="ordenMesFacturacion"></span>
+                                            </p>
+                                            <p><strong>Año de Facturacion:</strong>
+                                                <br>
+                                                <span id="ordenAnioFacturacion"></span>
+                                            </p>
+                                            <p><strong>Sesiones Restantes:</strong>
+                                                <br>
+                                                <span id="sesionesRestantes"></span>
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <img src="img/ordenej.jpg" class="img-fluid" alt="Imagen" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="notas">Notas:</label>
-                        <textarea class="form-control" id="notas" rows="5"></textarea>
+                    <button class="btn btn-primary mt-3" id="crear-orden" data-bs-toggle="modal" data-bs-target="#crearOrdenModal">Crear Orden</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para crear una nueva orden -->
+        <div class="modal fade" id="crearOrdenModal" tabindex="-1" role="dialog" aria-labelledby="crearOrdenModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="crearOrdenModalLabel">Crear Orden</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
-                    <button class="btn btn-primary" style="margin-top: 10px;">Guardar</button>
+                    <div class="modal-body">
+                        <form id="crearOrdenFormModal" method="POST" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="fechaOrdenModal" class="form-label">Fecha de la Orden:</label>
+                                <input type="date" class="form-control" id="fechaOrdenModal" name="fechaOrdenModal">
+                            </div>
+                            <div class="mb-3">
+                                <label for="medicoOrdenModal" class="form-label">Medico que ordeno:</label>
+                                <input type="text" class="form-control" id="medicoOrdenModal" name="medicoOrdenModal">
+                            </div>
+                            <div>
+                                <select class="form-select" id="kinesiologoOrdenModal" name="kinesiologoOrdenModal">
+                                    <option value="">Seleccionar Médico</option>
+                                    <?php foreach ($medicos as $medico) { ?>
+                                        <option value="<?php echo $medico['id']; ?>"><?php echo $medico['nombre'] . ' ' . $medico['apellido']; ?></option>
+                                    <?php } ?>
+                                </select>
+                                <input type="hidden" class="medicoSeleccionadoOrdenModal" id="medicoSeleccionadoOrdenModal" name="medicoSeleccionadoOrdenModal">
+                                <input type="hidden" class="idMedicoSeleccionadoOrdenModal" id="idMedicoSeleccionadoOrdenModal" name="idMedicoSeleccionadoOrdenModal">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="sesionesOrdenModal" class="form-label">Cantidad de Sesiones:</label>
+                                <input type="number" class="form-control" id="sesionesOrdenModal" name="sesionesOrdenModal">
+                            </div>
+                            <div class="mb-3">
+                                <label for="autorizacionOrdenModal" class="form-label">Autorización:</label>
+                                <input type="text" class="form-control" id="autorizacionOrdenModal" name="autorizacionOrdenModal">
+                            </div>
+                            <div class="mb-3">
+                                <label for="fechaAutorizacionOrdenModal" class="form-label">Fecha de Autorización:</label>
+                                <input type="date" class="form-control" id="fechaAutorizacionOrdenModal" name="fechaAutorizacionOrdenModal">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="mesFacturacionOrdenModal" class="form-label">Mes de Facturación:</label>
+                                    <select class="form-select" id="mesFacturacionOrdenModal">
+                                        <option value="">Seleccionar mes</option>
+                                        <option value="1">Enero</option>
+                                        <option value="2">Febrero</option>
+                                        <option value="3">Marzo</option>
+                                        <option value="4">Abril</option>
+                                        <option value="5">Mayo</option>
+                                        <option value="6">Junio</option>
+                                        <option value="7">Julio</option>
+                                        <option value="8">Agosto</option>
+                                        <option value="9">Septiembre</option>
+                                        <option value="10">Octubre</option>
+                                        <option value="11">Noviembre</option>
+                                        <option value="12">Diciembre</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="anioFacturacionOrdenModal" class="form-label">Año de Facturación:</label>
+                                    <input type="text" class="form-control" id="anioFacturacionOrdenModal">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="imagenOrdenModal" class="form-label">Adjuntar foto de la orden: (Opcional) </label>
+                                <input type="file" class="form-control" id="imagenOrdenModal">
+                            </div>
+                            <input type="hidden" id="id_usuario_orden_modal" name="id_usuario_orden_modal" value="<?php echo $id; ?>">
+                            <button type="button" class="btn btn-primary" id="crearOrdenButtonModal" name="crearOrdenButtonModal">Crear</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4" style="margin-top: 10px;">
+                <!-- Columna 3 -->
+                <div class="card">
+                    <div class="card-header">
+                        Notas:
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="fecha-actual">Fecha Actual:</label>
+                            <input type="date" class="form-control" id="fecha-actual" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="notas">Notas:</label>
+                            <textarea class="form-control" id="notas" rows="5"></textarea>
+                        </div>
+                        <button class="btn btn-primary" id="guardar-notas" style="margin-top: 10px;">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .list-group-item:hover {
+                background-color: #f0f0ff;
+                cursor: pointer;
+            }
+        </style>
+
+        <?php
+        require_once 'app/obtener_notas.inc.php';
+
+        // Obtener las notas de la base de datos para el ID de usuario especificado
+        $notas = obtenerNotasDesdeBD($id);
+
+        // Obtener el número de página actual para la primera paginación
+        $paginaActual1 = isset($_GET['page1']) ? $_GET['page1'] : 1;
+
+        // Datos de ejemplo
+        $totalNotas = count($notas); // Total de notas en la base de datos
+        $notasPorPagina = 10; // Número de notas a mostrar por página
+
+        // Calcular el índice de inicio y fin de las notas a mostrar en la página actual para la primera paginación
+        $indiceInicio1 = ($paginaActual1 - 1) * $notasPorPagina;
+        $indiceFin1 = $indiceInicio1 + $notasPorPagina - 1;
+        if ($indiceFin1 >= $totalNotas) {
+            $indiceFin1 = $totalNotas - 1;
+        }
+
+        // Verificar si hay notas disponibles para la primera paginación
+        if ($totalNotas > 0) {
+            // Obtener las notas de la página actual para la primera paginación
+            $notasPagina1 = array_slice($notas, $indiceInicio1, $notasPorPagina);
+        } else {
+            // No hay notas disponibles
+            $notasPagina1 = [];
+        }
+
+        // Calcular el número total de páginas para la primera paginación
+        $totalPaginas1 = ceil($totalNotas / $notasPorPagina);
+
+        // Obtener el número de página actual para la segunda paginación
+        $paginaActual2 = isset($_GET['page2']) ? $_GET['page2'] : 1;
+
+        // Calcular el índice de inicio y fin de las notas a mostrar en la página actual para la segunda paginación
+        $indiceInicio2 = ($paginaActual2 - 1) * $notasPorPagina;
+        $indiceFin2 = $indiceInicio2 + $notasPorPagina - 1;
+        if ($indiceFin2 >= $totalNotas) {
+            $indiceFin2 = $totalNotas - 1;
+        }
+
+        // Verificar si hay notas disponibles para la segunda paginación
+        if ($totalNotas > 0) {
+            // Obtener las notas de la página actual para la segunda paginación
+            $notasPagina2 = array_slice($notas, $indiceInicio2, $notasPorPagina);
+        } else {
+            // No hay notas disponibles
+            $notasPagina2 = [];
+        }
+
+        // Calcular el número total de páginas para la segunda paginación
+        $totalPaginas2 = ceil($totalNotas / $notasPorPagina);
+        ?>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h2>Notas</h2>
+                    <div class="card">
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <?php foreach ($notasPagina1 as $nota) : ?>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span><?php echo $nota['nota']; ?></span>
+                                        <span class="badge bg-primary"><?php echo $nota['fecha']; ?></span>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    </div>
+                    <nav aria-label="Paginación">
+                        <ul class="pagination justify-content-center mt-3">
+                            <?php if ($paginaActual1 > 1) : ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page1=<?php echo $paginaActual1 - 1; ?>#notas" tabindex="-1" aria-disabled="true">Anterior</a>
+                                </li>
+                            <?php endif; ?>
+                            <?php for ($i = 1; $i <= $totalPaginas1; $i++) : ?>
+                                <li class="page-item<?php echo ($i == $paginaActual1) ? ' active' : ''; ?>">
+                                    <a class="page-link" href="?page1=<?php echo $i; ?>#notas"><?php echo $i; ?></a>
+                                </li>
+                            <?php endfor; ?>
+                            <?php if ($paginaActual1 < $totalPaginas1) : ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page1=<?php echo $paginaActual1 + 1; ?>#notas">Siguiente</a>
+                                </li>
+                            <?php endif; ?>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-///////////////////////////////////////////////////////////////////////
-////////////CARGAR IMAGENES EN LA BASE DE DATOS////////////////////////
-//////////////////////////////////////////////////////////////////////
-
-    $(document).ready(function() {
-        $('#btn-cargar-imagen').click(function() {
-            var idUsuario = $("#id").text();
-            var fileInput = $('.input-imagen')[0];
-            var file = fileInput.files[0];
-            var filePath = fileInput.value; // Obtener la ruta completa del archivo desde el campo de entrada
-            var fileName = filePath ? filePath.substring(filePath.lastIndexOf('\\') + 1) : '';
-
-            // Crear un objeto FormData y agregar los datos necesarios
-            var formData = new FormData();
-            formData.append('idUsuario', idUsuario);
-            formData.append('file', file);
-            formData.append('filePath', filePath); // Agregar la ruta del archivo al FormData
-            formData.append('fileName', fileName); // Agregar el nombre del archivo al FormData
-
-            // Realizar la solicitud AJAX
-            $.ajax({
-                url: 'app/cargar_imagenes.php',
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    // Aquí puedes realizar cualquier acción con la respuesta recibida
-                    console.log('Respuesta del servidor:', response);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    // Manejo de errores
-                    console.error('Error:', textStatus, errorThrown);
-                }
-            });
-        });
-    });
-////////////////////////////////////////////////////////////////////////////////////////////
-////////////DETALLE DEL TURNO DEL USUARIO DESDE LA FICHA USUARIO///////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////
-
-    $(document).ready(function() {
-        // Agregar evento de clic a las filas de la tabla
-        $('tbody#turnos-body tr').click(function() {
-            var fila = $(this);
-            console.log(fila);
-
-            // Verificar si la condición se cumple para cargar el código
-            if (fila) {
-                // Manejar el evento de clic en la fila
-                fila.on("click", function(event) {
-                    // Detener la propagación del evento
-                    event.stopPropagation();
-                });
-
-                // Obtener los datos de la fila
-                var fecha = fila.find("td:eq(1)").text();
-                var hora = fila.find("td:eq(2)").text();
-                var medico = fila.find("td:eq(3)").text();
-                var valor = fila.find("td:eq(5)").text();
-                var pagado = parseInt(fila.find("td:eq(6)").text());
-
-                // Construir el contenido del detalle del turno
-                var detalleHtml =
-                    "<p><strong>Médico:</strong> " +
-                    medico +
-                    "</p>" +
-                    "<p><strong>Fecha:</strong> " +
-                    fecha +
-                    "</p>" +
-                    "<p><strong>Hora:</strong> " +
-                    hora +
-                    "</p>" +
-                    "<p><strong>Valor $</strong> " +
-                    valor +
-                    "</p>";
-
-                // Mostrar los detalles del turno en el modal
-                $('#detalleTurnoModaluser .modal-body').html(detalleHtml);
-                // Abrir el modal
-                $('#detalleTurnoModaluser').modal('show');
-
-                ///////////////ANALIZA EL ESTADO DEL CHECKBOX PARA MOSTRARLO TILDADO O NO///////////////////
-
-                var checkboxPagado = document.getElementById("checkboxuser2");
-                var estaPagado = pagado;
-
-                if (estaPagado) {
-                    // El checkbox está marcado
-                    // Establecer el estado del checkbox según el valor obtenido
-                    checkboxPagado.checked = estaPagado === 1; // Asigna true si valorPagado es 1, false en caso contrario
-                } else {
-                    // El checkbox está desmarcado
-                    checkboxPagado.checked = false;
-                }
-            }
-        });
-    });
-////////////////////////////////////////////////////////////////////////////
-///////MANEJA VER LAS IMAGENES DEL USUARIO EN FULL SCREEN///////////////////
-///////////////////////////////////////////////////////////////////////////
-
-    $(document).ready(function() {
-        // Agregar un evento de clic a cada imagen
-        $('.small-image').click(function() {
-            // Obtener la URL de la imagen grande
-            var fullscreenImageUrl = $(this).attr('src');
-
-            // Mostrar la imagen en pantalla completa con transición
-            $('#fullscreen-image').attr('src', fullscreenImageUrl);
-            $('#fullscreen-image-container').fadeIn();
-        });
-
-        // Cerrar la imagen en pantalla completa al hacer clic en el botón "Cerrar" o fuera de la imagen
-        $('#close-fullscreen-image, #fullscreen-image-container').click(function(e) {
-            if (e.target !== this) {
-                return;
-            }
-            $('#fullscreen-image-container').fadeOut();
-        });
-    });
-</script>
-
-
+<script src="informacion_paciente.js"></script>
 
 <?php
 // Limpiar las variables de sesión después de mostrar los datos
-include_once 'plantillas/footer.inc.php';
 include_once 'plantillas/cierrehtml.inc.php';
 ?>
