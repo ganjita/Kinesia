@@ -1,4 +1,30 @@
-// Obtén la ruta de la página actual
+// Evento para capturar el clic en los elementos del dropdown
+$(".dropdown-menu a.dropdown-item").on("click", function(event) {
+  event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+  event.stopPropagation(); // Detener la propagación del evento
+
+  var idTurno = $(this).data("idturno");
+  var fila = $("tr[data-idturno='" + idTurno + "']");
+  var estado = $(this).text();
+
+  // Actualizar el estado de la fila
+  fila.find(".estado-td").text(estado);
+
+  // Aplicar el color de fondo correspondiente según el estado seleccionado
+  if (estado === "Presente") {
+      fila.addClass("bg-info");
+  } else if (estado === "Ausente") {
+      fila.addClass("bg-secondary");
+  } else {
+      fila.removeClass("bg-info bg-secondary"); // Limpiar cualquier clase de color de fondo existente
+  }
+});
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 // Obtener el elemento input por su id
 var input = document.getElementById("fecha");
@@ -96,12 +122,11 @@ document.addEventListener("DOMContentLoaded", function () {
 ////////GUARDAR EL ID DE LA ORDEN CUANDO SE SELECCIONA EN INPUT OCULTO///////
 /////////////////////////////////////////////////////////////////////////////
 
-$(document).ready(function() {
+$(document).ready(function () {
   // Manejar el evento de cambio en el select
-  $(document).on("change", "#orden", function() {
+  $(document).on("change", "#orden", function () {
     // Obtener el valor seleccionado del select
     var valorSeleccionado = $(this).val();
-    
 
     // Actualizar el valor del input oculto
     $("#idOrdenSeleccionada").val(valorSeleccionado);
@@ -181,66 +206,134 @@ $(document).ready(function () {
         var valor = fila.find("td:nth-child(9)").text();
         var pagado = parseInt(fila.find("td:nth-child(10)").text());
         var id_usuario = fila.find("td:nth-child(11)").text();
+        var id_orden = fila.find("td:nth-child(12)").text();
 
-        // Construir el contenido del detalle del turno
         var detalleHtml =
-          "<p><strong>Médico:</strong> " +
+          "<h2><strong>Detalle del Turno</strong></h2><hr>" +
+          "<p><strong>Kinesiologo:</strong><br> " +
           medico +
           "</p>" +
-          "<p><strong>Fecha:</strong> " +
+          "<p><strong>Fecha:</strong><br> " +
           fecha +
           "</p>" +
-          "<p><strong>Hora:</strong> " +
+          "<p><strong>Hora:</strong><br> " +
           hora +
           "</p>" +
-          "<p><strong>Paciente:</strong> " +
+          "<p><strong>Paciente:</strong><br> " +
           paciente +
           "</p>" +
-          "<p><strong>Teléfono:</strong> " +
+          "<p><strong>Teléfono:</strong><br> " +
           telefono +
           "</p>" +
-          "<p><strong>O.Social:</strong> " +
+          "<p><strong>O.Social:</strong><br> " +
           obraSocial +
           "</p>" +
-          "<p><strong>Plan:</strong> " +
+          "<p><strong>Plan:</strong><br> " +
           plan +
           "</p>" +
-          "<p><strong>Nro.Afiliado:</strong> " +
+          "<p><strong>Nro.Afiliado:</strong><br> " +
           nroAfiliado +
           "</p>" +
-          "<p><strong>Valor $</strong> " +
+          "<p><strong>Valor $</strong><br> " +
           valor +
           "</p>";
 
-        ///////////////ANALIZA EL ESTADO DEL CHECKBOX PARA MOSTRARLO TILDADO O NO///////////////////
+        // Realizar una solicitud AJAX para obtener los detalles de la orden
+        $.ajax({
+          url: "app/recuperar_orden.inc.php", // Ruta del archivo PHP para obtener los detalles de la orden
+          type: "POST",
+          data: { id_orden: id_orden }, // Enviar el ID de la orden al archivo PHP
+          dataType: "json",
+          success: function (response) {
+            var orden = response;
+            var fechaOrden = orden["fecha_orden"];
+            var medicoExpedicion = orden["medico_expedicion"];
+            var kinesiologo = orden["kinesiologo"];
+            var sesiones = orden["sesiones"];
+            var autorizacion = orden["autorizacion"];
+            var fechaAutorizacion = orden["fecha_autorizacion"];
 
-        var checkboxPagado = document.getElementById("checkbox2");
-        var estaPagado = pagado;
+            if (orden.hasOwnProperty("img_autorizacion") && orden["img_autorizacion"] !== "") {
+              imgAutorizacion = orden["img_autorizacion"];
+            } else {
+              imgAutorizacion = "AUN NO HAY CARGADA IMAGEN DE LA ORDEN";
+            }
 
-        if (estaPagado) {
-          // El checkbox está marcado
-          // Establecer el estado del checkbox según el valor obtenido
-          checkboxPagado.checked = estaPagado === 1; // Asigna true si valorPagado es 1, false en caso contrario
-        } else {
-          // El checkbox está desmarcado
-          checkboxPagado.checked = false;
-        }
 
-        // Insertar el contenido del detalle del turno en el modal
-        $("#detalleTurnoModalBody").html(detalleHtml);
+            var mesFacturacion = orden["mes_facturacion"];
+            var anioFacturacion = orden["anio_facturacion"];
+            var sesionesRestantes = orden["sesiones_restantes"];
+            var ultimaActualizacion = orden["ultima_actualizacion"];
 
-        // Obtener el ID del turno
-        var idTurno = fila.attr("data-idturno");
+            // Construir la ruta completa de la imagen
+            var rutaImagen = "img/" + imgAutorizacion;
 
-        // Establecer el ID del turno en los campos ocultos de los popups para utilizarlo en la base de datos
-        $("#turnoIdFecha").val(idTurno);
-        $("#turnoIdHora").val(idTurno);
-        $("#turnoIdEliminar").val(idTurno);
-        $("#idTurnoPadre").val(idTurno);
-        $("#idUsuarioFila").val(id_usuario);
+            // Construir el contenido del detalle del turno
+            var detalleordenHtml =
+              "<h2><strong>Detalle de la Orden:</strong></h2><hr>" +
+              "<p><strong>Fecha de Orden: </strong><br> " +
+              fechaOrden +
+              "</p>" +
+              "<p><strong>Medico que la pidio: </strong><br> " +
+              medicoExpedicion +
+              "</p>" +
+              "<p><strong>Kinesiologo que atiende: </strong><br> " +
+              medico +
+              "</p>" +
+              "<p><strong>Sesiones de la orden: </strong><br> " +
+              sesiones +
+              "</p>" +
+              "<p><strong>Autorizacion: </strong><br> " +
+              autorizacion +
+              "</p>" +
+              "<p><strong>Fecha que se autorizo: </strong><br> " +
+              fechaAutorizacion +
+              "</p>" +
+              "<p><strong>Mes de facturazion: </strong><br>" +
+              mesFacturacion +
+              "</p>" +
+              "<p><strong>Año de facturacion: </strong><br>" +
+              anioFacturacion +
+              "</p>" +
+              "<p><strong>Sesiones restantes: </strong><br>" +
+              sesionesRestantes +
+              "</p>" +
+              "<p><strong>Ultima Actualizacion: </strong><br>" +
+              ultimaActualizacion +
+              "</p>";
 
-        // Abrir el modal
-        $("#detalleTurnoModal").modal("show");
+              var imagenOrdenHtml =
+              "<h2><strong>Imagen de Orden: </strong></h2><hr>";
+            
+            if (imgAutorizacion !== "AUN NO HAY CARGADA IMAGEN DE LA ORDEN") {
+              imagenOrdenHtml +=
+                '<img id="imgAutorizacion" alt="Imagen de Autorización" style="height: 400px; width: 300px;" src="' +
+                rutaImagen +
+                '">';
+            } else {
+              imagenOrdenHtml += "<p>" + imgAutorizacion + "</p>";
+            }
+
+            // Insertar el contenido del detalle del turno en el modal
+            $("#detalleTurnoModalBody").html(detalleHtml);
+            $("#detalleOrdenModalBody").html(detalleordenHtml);
+            $("#imagenOrdenModalBody").html(imagenOrdenHtml);
+
+            // Obtener el ID del turno
+            var idTurno = fila.attr("data-idturno");
+
+            // Establecer el ID del turno en los campos ocultos de los popups para utilizarlo en la base de datos
+            $("#turnoIdFecha").val(idTurno);
+            $("#turnoIdHora").val(idTurno);
+            $("#turnoIdEliminar").val(idTurno);
+            $("#idTurnoPadre").val(idTurno);
+            $("#idUsuarioFila").val(id_usuario);
+
+            // Mostrar ambas modalidades
+            $("#detalleTurnoModal").modal("show");
+            $("#detalleOrdenModal").modal("show");
+          },
+        });
       }
     });
   }
@@ -837,5 +930,8 @@ $(document).ready(function () {
 });
 
 ///////////////////////////////////////////////////////////////////////////////
-///////////////RECUPERAR ORDENES DEL USUARIO PASADO POR ID////////////////////
+///////////////click en la columna hora se ordena ascendente////////////////////
 /////////////////////////////////////////////////////////////////////////////
+
+
+

@@ -51,9 +51,9 @@ session_start();
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr id="fila-bloqueada">
-                            <th scope="col">Médico</th>
+                            <th scope="col">Kinesiologo</th>
                             <th scope="col">Fecha</th>
-                            <th scope="col">Hora</th>
+                            <th scope="col" class="sortable-column" data-sort-key="hora">Hora</th>
                             <th scope="col">Paciente</th>
                             <th scope="col">Telefono</th>
                             <th scope="col">O.Social</th>
@@ -65,29 +65,45 @@ session_start();
                         <!-- Filas generadas dinámicamente -->
                     </tbody>
                 </table>
-
-
             </div>
 
             <!-- Ventana popup -->
             <div class="modal fade" id="detalleTurnoModal" tabindex="-1" role="dialog" aria-labelledby="detalleTurnoModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog modal-xl" role="document">
                     <div class="modal-content">
                         <div class="modal-header" id="cerrarmodal">
-                            <h5 class="modal-title" id="detalleTurnoModalLabel">Detalles del Turno</h5>
+                            <h5 class="modal-title" id="detalleTurnoModalLabel">Detalles del Turno y Orden</h5>
                             <button type="button" class="btn-close close" id="close" data-bs-dismiss="modal" aria-label="Close">
                             </button>
                             <input type="int" id="idTurnoFila" name="idTurnoFila" hidden>
                             <input type="int" id="idUsuarioFila" name="idUsuarioFila" hidden>
                         </div>
-                        <div class="modal-body" id="detalleTurnoModalBody">
-                            <!-- Contenido del detalle del turno -->
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="modal-body" id="detalleTurnoModalBody">
+                                    <!-- Contenido del detalle del turno -->
 
+                                </div>
+                            </div>
+                        
+                            <div class="col-md-4">
+                                <div class="modal-body" id="detalleOrdenModalBody">
+                                    <!-- Contenido del detalle del turno -->
+
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="modal-body" id="imagenOrdenModalBody">
+                                    <!-- Contenido del detalle del turno -->
+
+                                </div>
+                            </div>
                         </div>
+                        <hr>
                         <div class="form-check form-check-inline d-flex align-items-center justify-content-center">
                             <input class="form-check-input" type="checkbox" id="checkbox2" style="margin-left: 3px;" ;>
                             <label class=" form-check-label" for="checkbox2" style="margin-left: 3px;">ESTA PÁGO (tilda para marcar que esta pagado)</label>
-                            <button type="button" class="btn btn-success" id="actEstadoBtn">Actualizar estado</button>
+                            <button type="button" style="margin-left: 10px;" class="btn btn-success" id="actEstadoBtn">Actualizar estado</button>
                         </div>
 
 
@@ -210,7 +226,6 @@ session_start();
                     </div>
                 </div>
             </div>
-
 
             <?php
             include_once 'plantillas\cierrehtml.inc.php';

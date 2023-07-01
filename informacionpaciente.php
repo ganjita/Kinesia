@@ -45,7 +45,7 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    Información Personal
+                    INFORMACION PERSONAL
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -224,7 +224,7 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    Turnos
+                    TURNOS
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -413,6 +413,7 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                                 </div>
                             </div>
                         </div>
+
                         <!-- Popup para mostrar los resultados de la búsqueda -->
                         <div class="modal fade" id="resultadosModalUser" tabindex="-1" role="dialog" aria-labelledby="resultadosModalUserLabel" aria-hidden="true">
                             <div class="modal-dialog modal-lg">
@@ -449,6 +450,7 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                             </div>
                         </div>
                     </div>
+
                     <div id="pagination">
                         <!-- Contenedor para los botones de paginación -->
                     </div>
@@ -456,6 +458,8 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
             </div>
         </div>
     </div>
+
+    <hr style="margin-top: 30px; margin-bottom: 30px;">
 
     <div class="row-mt-4" style="margin-top: 10px;">
         <div class="col-md-12">
@@ -495,7 +499,6 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                     </div>
                 </div>
             </div>
-
             <!-- Contenedor para mostrar la imagen en pantalla completa -->
             <div class="modal fade" id="fullscreen-modal" tabindex="-1" aria-labelledby="fullscreen-modal-label" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -513,44 +516,14 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
         </div>
     </div>
 
-    <div class="row mt-4" style="margin-top: 10px;">
-        <div class="col-md-4" style="margin-top: 10px;">
-            <!-- Columna 2 -->
-            <div class="card">
-                <div class="card-header">
-                    Caja-Cliente
-                </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="saldo-deudor">Saldo Deudor: ($)</label>
-                        <?php
-                        $cuenta = 0;
-                        if (isset($datosTurnos)) {
-                            foreach ($datosTurnos as $turno) {
-                                $pagado = $turno['pagado'];
-                                if (convertirValorPagado($pagado) == 'No') {
-                                    $valorTurno = $turno['valor'];
-                                    $cuenta += $valorTurno;
-                                }
-                            }
-                        }
-                        ?>
-                        <input type="text" class="form-control" id="saldo-deudor" readonly value="<?php echo $cuenta ?>">
-                    </div>
-                    <div class="form-group">
-                        <label for="anotacion-entrega">Anotación:</label>
-                        <input class="form-control" id="anotacion-entrega">
-                    </div>
-                    <button class="btn btn-primary" style="margin-top: 10px;">Realizar Entrega</button>
-                </div>
-            </div>
-        </div>
+    <hr style="margin-top: 30px; margin-bottom: 30px;">
 
-        <div class="col-md-8" style="margin-top: 10px;">
+    <div class="row mt-4" style="margin-top: 10px;">
+        <div class="col-md" style="margin-top: 10px;">
             <!-- Columna 4 -->
             <div class="card">
                 <div class="card-header">
-                    Ordenes
+                    ORDENES
                 </div>
                 <div class="card-body">
                     <!-- Lista de órdenes -->
@@ -586,10 +559,7 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                                                 <br>
                                                 <span id="ordenMedico"></span>
                                             </p>
-                                            <p><strong>Kinesiólogo asignado:</strong>
-                                                <br>
-                                                <span id="ordenKinesiologo"></span>
-                                            </p>
+
                                             <p><strong>Cantidad de Sesiones:</strong>
                                                 <br>
                                                 <span id="ordenSesiones"></span>
@@ -612,7 +582,7 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                                             </p>
                                             <p><strong>Sesiones Restantes:</strong>
                                                 <br>
-                                                <span id="sesionesRestantes"></span>
+                                                <span id="ordenSesionesRestantes"></span>
                                             </p>
                                         </div>
                                         <div class="modal-footer">
@@ -620,7 +590,8 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <img src="img/ordenej.jpg" class="img-fluid" alt="Imagen" />
+                                        <p><strong>Foto de la orden:</strong>
+                                            <img src="img/ordenej.jpg" class="img-fluid" alt="Imagen" />
                                     </div>
                                 </div>
                             </div>
@@ -707,13 +678,15 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                 </div>
             </div>
         </div>
+
+        <hr style="margin-top: 30px; margin-bottom: 30px;">
+
         <div class="row">
             <div class="col-md-4" style="margin-top: 10px;">
                 <!-- Columna 3 -->
                 <div class="card">
                     <div class="card-header">
-                        Notas:
-                    </div>
+                        CREAR UNA ANOTACION </div>
                     <div class="card-body">
                         <div class="form-group">
                             <label for="fecha-actual">Fecha Actual:</label>
@@ -724,6 +697,38 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
                             <textarea class="form-control" id="notas" rows="5"></textarea>
                         </div>
                         <button class="btn btn-primary" id="guardar-notas" style="margin-top: 10px;">Guardar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4" style="margin-top: 10px;">
+                <!-- Columna 3 -->
+                <div class="card">
+                    <div class="card-header">
+                        CAJA
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="saldo-deudor">Saldo Deudor: ($)</label>
+                            <?php
+                            $cuenta = 0;
+                            if (isset($datosTurnos)) {
+                                foreach ($datosTurnos as $turno) {
+                                    $pagado = $turno['pagado'];
+                                    if (convertirValorPagado($pagado) == 'No') {
+                                        $valorTurno = $turno['valor'];
+                                        $cuenta += $valorTurno;
+                                    }
+                                }
+                            }
+                            ?>
+                            <input type="text" class="form-control" id="saldo-deudor" readonly value="<?php echo $cuenta ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="anotacion-entrega">Anotación:</label>
+                            <input class="form-control" id="anotacion-entrega">
+                        </div>
+                        <button class="btn btn-primary" style="margin-top: 10px;">Realizar Entrega</button>
                     </div>
                 </div>
             </div>
@@ -790,6 +795,9 @@ if (isset($_SESSION['datosUsuarios']) && isset($_SESSION['datosTurnos'])) {
         // Calcular el número total de páginas para la segunda paginación
         $totalPaginas2 = ceil($totalNotas / $notasPorPagina);
         ?>
+
+        <hr style="margin-top: 30px; margin-bottom: 30px;">
+
         <div class="container">
             <div class="row">
                 <div class="col">

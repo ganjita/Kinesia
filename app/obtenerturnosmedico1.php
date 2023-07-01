@@ -15,7 +15,7 @@ if (isset($_POST['fecha']) && isset($_POST['medico'])) {
     // Obtener los parámetros de fecha y medico enviados por POST
     $fecha = $_POST['fecha'];
     $medico = $_POST['medico'];
-    
+
     try {
         // Crear conexión PDO
         $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
@@ -27,7 +27,7 @@ if (isset($_POST['fecha']) && isset($_POST['medico'])) {
                     FROM turnos t
                     JOIN usuarios u ON t.id_usuario = u.id
                     WHERE fecha_turno = :fecha
-                    ORDER BY t.fecha_turno DESC";
+                    ORDER BY t.fecha_turno DESC, t.hora_turno ASC"; // Ordenar por fecha_turno y hora_turno ascendentes            $stmt = $conn->prepare($sql);
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':fecha', $fecha);
         } else {
@@ -36,8 +36,7 @@ if (isset($_POST['fecha']) && isset($_POST['medico'])) {
                     FROM turnos t
                     JOIN usuarios u ON t.id_usuario = u.id
                     WHERE fecha_turno = :fecha AND id_medico = :medico
-                    ORDER BY t.fecha_turno DESC";
-            $stmt = $conn->prepare($sql);
+                    ORDER BY t.fecha_turno DESC, t.hora_turno ASC"; // Ordenar por fecha_turno y hora_turno ascendentes            $stmt = $conn->prepare($sql);
             $stmt->bindParam(':fecha', $fecha);
             $stmt->bindParam(':medico', $medico);
         }
@@ -61,7 +60,8 @@ if (isset($_POST['fecha']) && isset($_POST['medico'])) {
             $html .= "<td>" . $resultado['nroafiliado'] . "</td>";
             $html .= "<td hidden>" . $resultado['valor'] . "</td>";
             $html .= '<td data-pagado="" hidden>' . $resultado['pagado'] . '</td>';
-            $html .= '<td data-idusuario="" hidden>' . $resultado['id_usuario'] .'</td>';
+            $html .= '<td data-idusuario="" hidden>' . $resultado['id_usuario'] . '</td>';
+            $html .= "<td hidden>" . $resultado['id_orden'] . "</td>";
             $html .= "</tr>";
         }
     } catch (PDOException $e) {
