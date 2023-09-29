@@ -8,7 +8,7 @@ session_start();
 <!-- Usar el componente form de bootstrap 5 -->
 <div class="container" style="margin-top: 30px;">
   <div class="row">
-    <div class="container col-6">
+  <div class="container col-6" style="margin-bottom: 50px;">
       <form action="app\buscarpacienteregturno.php" method="POST" class="appointment-form container-fluid"> <!--PROCESAR FORMULARIO-->
         <h2 class="form-title">Solicitud de Turno</h2>
 
@@ -104,8 +104,9 @@ session_start();
         <div class="input-group">
           <button type="submit2" id="regturno" name="regturno" class="btn btn-primary btn-submit">Solicitar Turno</button>
         </div>
-
-
+        <div class="alert alert-danger mt-3" role="alert" id="error-message" style="display: none;">
+          <strong>Error:</strong> Debes completar todos los campos.
+        </div>
       </form>
     </div>
 
@@ -175,7 +176,37 @@ session_start();
   </div>
 </div>
 
+<script>
+  
+  $(document).ready(function() {
+  $('#regturno').click(function(event) {
+    var camposCompletos = true; // Suponemos que todos los campos están completos
+
+    // Validar que todos los campos, excepto el campo con ID "busqueda", no estén vacíos
+    $('form input:not(#busqueda), form select, form textarea').each(function() {
+      if ($(this).val() === '') {
+        camposCompletos = false;
+        return false; // Detener la iteración si se encuentra un campo vacío
+      }
+    });
+
+    // Mostrar u ocultar el mensaje de error según el estado de los campos
+    if (!camposCompletos) {
+      $('#error-message').show();
+      event.preventDefault(); // Evitar que el formulario se envíe si faltan campos, excepto "busqueda"
+    } else {
+      $('#error-message').hide();
+    }
+  });
+});
+
+</script>
+
+
+</script>
+
 <?php
 include 'plantillas/cierrehtml.inc.php';
+
 
 ?>

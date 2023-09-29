@@ -97,7 +97,7 @@ include_once 'app/recuperarmedico.inc.php';
             </div>
         </form>
         <input type="hidden" id="id_usuario_orden" name="idUsuarioOrden">
-        <button type="submit" class="btn btn-primary mt-3">Crear Orden</button>
+        <button type="submit" class="btn btn-primary enviarOrden mt-3">Crear Orden</button>
     </form>
 </div>
 
@@ -184,20 +184,22 @@ include_once 'app/recuperarmedico.inc.php';
         });
     });
     $(document).ready(function() {
-        $('.btn-primary').click(function(event) {
-            event.preventDefault();
+    $('.enviarOrden').click(function(event) {
+        event.preventDefault();
 
+        // Obtener los valores de los campos
+        var fechaOrden = $('#fechaOrden').val();
+        var medicoOrden = $('#medicoOrden').val();
+        var kinesiologoOrden = $('#idMedicoSeleccionadoOrden').val();
+        var sesionesOrden = $('#sesionesOrden').val();
+        var autorizacionOrden = $('#autorizacionOrden').val();
+        var fechaAutorizacionOrden = $('#fechaAutorizacionOrden').val();
+        var mesFacturacion = $('#mesFacturacion').val();
+        var anioFacturacion = $('#anioFacturacion').val();
+        var idUsuarioOrden = $('#id_usuario_orden').val();
 
-            var fechaOrden = $('#fechaOrden').val();
-            var medicoOrden = $('#medicoOrden').val();
-            var kinesiologoOrden = $('#idMedicoSeleccionadoOrden').val();
-            var sesionesOrden = $('#sesionesOrden').val();
-            var autorizacionOrden = $('#autorizacionOrden').val();
-            var fechaAutorizacionOrden = $('#fechaAutorizacionOrden').val();
-            var mesFacturacion = $('#mesFacturacion').val();
-            var anioFacturacion = $('#anioFacturacion').val();
-            var idUsuarioOrden = $('#id_usuario_orden').val();
-
+        // Validar que todos los campos estén completos
+        if (fechaOrden && medicoOrden && kinesiologoOrden && sesionesOrden && autorizacionOrden && fechaAutorizacionOrden && mesFacturacion && anioFacturacion && idUsuarioOrden){
             // Crear el objeto formData
             var formData = new FormData();
             formData.append('fechaOrden', fechaOrden);
@@ -209,7 +211,6 @@ include_once 'app/recuperarmedico.inc.php';
             formData.append('mesFacturacion', mesFacturacion);
             formData.append('anioFacturacion', anioFacturacion);
             formData.append('idUsuarioOrden', idUsuarioOrden);
-
 
             var inputImagen = document.getElementById('imagen');
             var file = inputImagen.files[0];
@@ -228,7 +229,7 @@ include_once 'app/recuperarmedico.inc.php';
                         icon: 'success',
                         title: 'Todo OK!',
                         text: response,
-                        showConfirmButton: true, // Ocultar el botón "OK"
+                        showConfirmButton: true,
                     }).then(function() {
                         // Cerrar la alerta y realizar la acción de actualizar la página y borrar los datos del formulario
                         location.reload();
@@ -240,8 +241,13 @@ include_once 'app/recuperarmedico.inc.php';
                     alert('Ups, Hay algun error').error(error);
                 }
             });
-        });
+        } else {
+            // Mostrar un mensaje de error si no se completaron todos los campos
+            alert('Por favor, complete todos los campos del formulario.');
+        }
     });
+});
+
 
 
 </script>
